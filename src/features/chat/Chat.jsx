@@ -22,7 +22,11 @@ class Chat extends Component {
 
   render() {
     return this.state.user ? 
-    <Profile user={this.state.user} /> : <LoadingIndicator />
+    <div>
+      <ChannelDarwer />
+      <Profile user={this.state.user} />
+      </div>
+      : <LoadingIndicator />
   }
 }
 
