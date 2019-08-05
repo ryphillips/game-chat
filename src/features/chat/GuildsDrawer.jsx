@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -17,6 +17,15 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import ChannelTabs from './ChannelTabs';
+import ToggleDisplay from '../../common/components/toggleDisplay';
+
+const tabs = [
+  { label: 'Friends', component: <ChannelTabs /> },
+  { label: 'Xbox', component: <ChannelTabs /> },
+  { label: 'Play Station', component: <ChannelTabs /> },
+  { label: 'Switch', component: <ChannelTabs /> }
+];
 
 const drawerWidth = 240;
 
@@ -81,7 +90,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function MiniDrawer() {
+export default function MiniDrawer(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -94,9 +103,17 @@ export default function MiniDrawer() {
     setOpen(false);
   }
 
+  const guildTabs = tabs.map((tab, index) => {
+    return (
+      <ListItem onClick={() => props.onGuildClicked(tab.label)} selected={props.currentGuild === tab.label} button key={tab.label}>
+        <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+        <ListItemText primary={tab.label} />
+      </ListItem>
+    )
+  })
+
   return (
     <div className={classes.root}>
-      <CssBaseline />
       <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
@@ -116,7 +133,7 @@ export default function MiniDrawer() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Mini variant drawer
+            Chat
           </Typography>
         </Toolbar>
       </AppBar>
@@ -141,26 +158,12 @@ export default function MiniDrawer() {
         </div>
         <Divider />
         <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
+          {guildTabs}
         </List>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        
+        <ChannelTabs />
       </main>
     </div>
   );

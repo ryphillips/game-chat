@@ -1,13 +1,25 @@
 import React, { Component } from 'react';
-import Profile from '../../common/components/Profile';
-import ChannelDarwer from './ChannelDrawer';
+import ChannelDarwer from './GuildsDrawer';
 import withAuth from '@okta/okta-react/dist/withAuth';
+import { connect } from 'react-redux';
 import LoadingIndicator from '../../common/components/loading';
+import * as Actions from './chatActions';
+
+const chatState = (state)  => {
+  return {
+    currentGuild: state.chat.currentGuild
+  };
+}
+const chatActions = {
+  onGuildClicked: Actions.selectGuild
+};
 
 class Chat extends Component {
   constructor(props) {
     super(props);
-    this.state = {user: null}
+    this.state = {
+      user: null
+    };
   }
 
   componentDidMount() {
@@ -17,17 +29,18 @@ class Chat extends Component {
           user
         });
       })
-      .catch(console.error)
+      .catch(console.error);
   }
 
   render() {
     return this.state.user ? 
-    <div>
-      <ChannelDarwer />
-      <Profile user={this.state.user} />
+      <div>
+        <ChannelDarwer {...this.state} {...this.props} />
+      </div> :
+      <div>
+        <LoadingIndicator />
       </div>
-      : <LoadingIndicator />
   }
 }
 
-export default withAuth(Chat);
+export default connect(chatState, chatActions)(withAuth(Chat));

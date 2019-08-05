@@ -1,6 +1,5 @@
 import React from 'react';
 import LinearProgress from '@material-ui/core/LinearProgress';
-//import PacManAnimation from '../../assets/Pacman.svg';
 import { Typography, CircularProgress } from '@material-ui/core';
 
 const LoadingIndicator = (props) => (
@@ -17,10 +16,9 @@ const LoadingIndicator = (props) => (
         height: 400,
         width: 400,
       }}>
-      <Typography align="center" component="h1" variant="h3">
+      <Typography style={{ marginTop: 80 }} align="center" component="h1" variant="h4">
         Loading...
       </Typography>
-      {/*< img src={PacManAnimation} alt='pacman' />*/}
       <CircularProgress style={{marginLeft: 130, marginTop: 100}} size={100} color="primary" />
     </div>
   </div>
