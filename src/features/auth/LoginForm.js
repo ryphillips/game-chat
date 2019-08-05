@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import OktaAuth from '@okta/okta-auth-js';
 import { withAuth } from '@okta/okta-react';
 import {
@@ -12,14 +13,22 @@ import {
   TextField,
   Button,
   Tooltip,
-  Fab
+  Fab,
+  Box,
 } from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import MessageBar from '../../common/components/MessageBar';
 import Company from '../../assets/company.png';
 import * as config from '../../config/okta';
+import { socialUserReceived } from './authActions';
 
-export default withAuth(
+
+function authState(state) {
+  return {
+    user: state.auth_.user
+  };
+}
+
 class LoginForm extends Component {
   constructor(props) {
     super(props);
@@ -46,12 +55,11 @@ class LoginForm extends Component {
 
     this.setState({ authenticating: true });
     this.oktaAuth.signIn({
-      email: this.state.email,
+      username: this.state.email,
       password: this.state.password
     })
       .then(res => {
         //this.props.dispatch(userReceived(res));
-        console.log(res);
         this.setState({
           email: '',
           password: '',
@@ -84,9 +92,11 @@ class LoginForm extends Component {
       idp: config.GOOGLE_IDP,
     })
       .then(async tokenOrTokens => {
-        const decodedToken = await this.oktaAuth.token.decode(tokenOrTokens[0].accessToken);
-        const userInfo = await this.oktaAuth.token.getUserInfo(tokenOrTokens[0]);
-        this.props.dispatch(Actions.socialUserReceived(userInfo));
+        const decodedToken =
+          await this.oktaAuth.token.decode(tokenOrTokens[0].accessToken);
+        const userInfo =
+          await this.oktaAuth.token.getUserInfo(tokenOrTokens[0]);
+        this.props.dispatch(socialUserReceived(userInfo));
         this.setState({
           sessionToken: decodedToken.signature
         });
@@ -106,7 +116,7 @@ class LoginForm extends Component {
     });
   }
 
-  handleemailChange = (e) => {
+  handleEmailChange = (e) => {
     this.setState({
       email: e.target.value
     });
@@ -198,13 +208,16 @@ class LoginForm extends Component {
         <Box mt={5}>
           <Tooltip title="Sign In with Google">
             <Fab style={{ backgroundColor: "transparent" }}
+            variant="extended"
               size="small" onClick={this.googleLogin}
               disabled={false}>
-              <FontAwesomeIcon icon={['fab', 'google']} />
+              <FontAwesomeIcon color="white" size="2x" icon={['fab', 'google-plus-g']} />
             </Fab>
           </Tooltip>
         </Box>
       </Container>
     );
   }
-});
+}
+
+export default connect(authState)(withAuth(LoginForm))

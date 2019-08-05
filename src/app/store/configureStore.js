@@ -19,7 +19,7 @@ export default function configureStore(preloadedState) {
 
   if (isNotProduction) {
     if (module.hot) {
-      module.hot.accept("../reducers/rootReducer", () => {
+      module.hot.accept("../reducers/homeReducer", () => {
         const newRootReducer = require("../reducers/homeReducer").default;
         store.replaceReducer(newRootReducer)
       });

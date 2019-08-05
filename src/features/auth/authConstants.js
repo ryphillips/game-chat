@@ -1,0 +1,3 @@
+
+
+export const SOCIAL_USER_RECEIVED = 'SOCIAL_USER_RECEIVED';
