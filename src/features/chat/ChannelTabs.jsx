@@ -3,15 +3,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import PhoneIcon from '@material-ui/icons/Phone';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import PersonPinIcon from '@material-ui/icons/PersonPin';
-import HelpIcon from '@material-ui/icons/Help';
-import ShoppingBasket from '@material-ui/icons/ShoppingBasket';
-import ThumbDown from '@material-ui/icons/ThumbDown';
-import ThumbUp from '@material-ui/icons/ThumbUp';
 import Typography from '@material-ui/core/Typography';
-import Logo from '../../assets/company.png';
+import MessageContainer from './MessageContainer';
+import TextField from '@material-ui/core/TextField';
+import Default from '../../assets/discorddefault.png';
+import { databaseRef } from '../../data/firebase';
 
 function TabContainer(props) {
   return (
@@ -23,48 +20,88 @@ function TabContainer(props) {
 
 const useStyles = makeStyles(theme => ({
   root: {
-    position:  'fixed',
     flexGrow: 1,
-    width: '90%',
-    backgroundColor: theme.palette.background.paper,
+    width: '100%',
+    backgroundColor: 'transparent',
   },
 }));
 
-export default function ScrollableTabsButtonForce() {
+export default function ChannelTabs(props) {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
+  const [currentMessage, setCurrentMessage] = React.useState('');
+  const [currentChannel, setCurrentChannel] = React.useState('Game2');
+  const [channels, setChannels] = React.useState([]);
+  React.useEffect(() => {
+    databaseRef.ref(`channels/${props.currentGuild}`)
+    .once('value')
+    .then(snapshot => {
+      const channelNames = Object.keys(snapshot.val())
+      setChannels(channelNames);
+    })
+  }, []);
 
-  function handleChange(event, newValue) {
-    setValue(newValue);
+  function handleChange(event, newChannel) {
+    setCurrentChannel(newChannel);
   }
+
+  function handleTyping(event) {
+    const { user, startedTyping } = props
+    //startedTyping(user.name);
+    setCurrentMessage(event.target.value);
+  }
+
+  function handleSubmit(event) {
+    if (event.key !== 'Enter' || !currentMessage) return;
+    event.preventDefault();
+    const { user, addMessage, currentChannel } = props;
+    /*addMessage({
+      user,
+      currentMessage
+    });*/
+    setCurrentMessage('');
+  }
+
+  const channelTabs = channels.map(channel => (
+    <Tab value={channel} label={channel} icon={<FavoriteIcon />} />
+  ))
+
+  const channelContent = channels.map(channel => (
+    <div>
+      {channel === currentChannel ? (
+        <TabContainer>
+          <MessageContainer channel={currentChannel} />
+          <TextField fullWidth
+            id="filled-dense-multiline"
+            label="Say something..."
+            margin="dense"
+            variant="filled"
+            color="blue"
+            multiline
+            rowsMax="4"
+            value={currentMessage}
+            onChange={handleTyping}
+            onKeyDown={handleSubmit}
+          />
+        </TabContainer>
+      ) : null}
+    </div>
+  ));
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" color="default">
+      <AppBar position="sticky" color="default">
         <Tabs
-          value={value}
+          value={currentChannel}
           onChange={handleChange}
           variant="scrollable"
           scrollButtons="on"
           indicatorColor="primary"
           textColor="primary"
         >
-          <Tab label="Item One" icon={<PhoneIcon />} />
-          <Tab label="Item Two" icon={<FavoriteIcon />} />
-          <Tab label="Item Three" icon={<PersonPinIcon />} />
-          <Tab label="Item Four" icon={<HelpIcon />} />
-          <Tab label="Item Five" icon={<ShoppingBasket />} />
-          <Tab label="Item Six" icon={<ThumbDown />} />
-          <Tab label="Item Seven" icon={<ThumbUp />} />
+          {channelTabs}
         </Tabs>
       </AppBar>
-      {value === 0 && <TabContainer>Item One</TabContainer>}
-      {value === 1 && <TabContainer>Item Two</TabContainer>}
-      {value === 2 && <TabContainer>Item Three</TabContainer>}
-      {value === 3 && <TabContainer>Item Four</TabContainer>}
-      {value === 4 && <TabContainer>Item Five</TabContainer>}
-      {value === 5 && <TabContainer>Item Six</TabContainer>}
-      {value === 6 && <TabContainer>Item Seven</TabContainer>}
+      { channelContent}
     </div>
   );
 }

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import OktaAuth from '@okta/okta-auth-js';
 import { withAuth } from '@okta/okta-react';
+import { databaseRef }  from '../../data/firebase';
+import { auth } from 'firebase';
 import {
   CircularProgress,
   Container,
@@ -21,7 +23,6 @@ import MessageBar from '../../common/components/MessageBar';
 import Company from '../../assets/company.png';
 import * as config from '../../config/okta';
 import { socialUserReceived } from './authActions';
-
 
 function authState(state) {
   return {
@@ -58,8 +59,20 @@ class LoginForm extends Component {
       username: this.state.email,
       password: this.state.password
     })
-      .then(res => {
-        //this.props.dispatch(userReceived(res));
+      .then(async res => {
+        console.log(res)
+        const userId = res.user.id;
+        const user = await databaseRef.ref(`users/${userId}`).once('value');
+        console.log(userId)
+        if (!user.val()) {
+          databaseRef.ref('users').push({
+            userId: {
+              name: 'Ryan',
+              email: this.state.email,
+              avatar: 'none'
+            }
+          });
+        }
         this.setState({
           email: '',
           password: '',

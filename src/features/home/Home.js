@@ -41,6 +41,7 @@ export default withAuth(
           <h1>hello world {this.state.user ? this.state.user.name : ''}</h1>
           <Link to='/'>Home</Link><br />
           <Link to='/protected'>Protected</Link><br />
+          <Link to='/chat'>Chat</Link><br/>
           {button}
           <Button onClick={this.props.toggleTheme} >
             Toggle theme

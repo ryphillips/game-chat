@@ -1,41 +1,36 @@
 import React, { Component } from 'react';
-import ChannelDarwer from './GuildsDrawer';
+import GuildsDarwer from './GuildsDrawer';
 import withAuth from '@okta/okta-react/dist/withAuth';
 import { connect } from 'react-redux';
 import LoadingIndicator from '../../common/components/loading';
 import * as Actions from './chatActions';
-
-const chatState = (state)  => {
-  return {
-    currentGuild: state.chat.currentGuild
-  };
-}
-const chatActions = {
-  onGuildClicked: Actions.selectGuild
-};
+import { databaseRef } from '../../data/firebase';
 
 class Chat extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: null
+      user: null,
+      guilds: []
     };
   }
 
   componentDidMount() {
-    this.props.auth.getUser()
-      .then(user => {
-        this.setState({
-          user
-        });
-      })
-      .catch(console.error);
+    this.props.auth.getUser().then(async user => {
+      const guilds = await databaseRef.ref('guilds').once('value');
+      const guildNames = await Object.keys(guilds.val());
+      this.setState({
+        user,
+        guilds: guildNames
+      });
+    })
+    .catch(console.error);
   }
 
   render() {
-    return this.state.user ? 
+    return this.state.user ?
       <div>
-        <ChannelDarwer {...this.state} {...this.props} />
+        <GuildsDarwer {...this.state} {...this.props} />
       </div> :
       <div>
         <LoadingIndicator />
@@ -43,4 +38,4 @@ class Chat extends Component {
   }
 }
 
-export default connect(chatState, chatActions)(withAuth(Chat));
+export default withAuth(Chat);

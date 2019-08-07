@@ -3,14 +3,17 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 import configureStore from './app/store/configureStore';
+import { firebaseConfig } from './config/firebase';
+import { initializeApp } from 'firebase';
 
-const store = configureStore();
+initializeApp(firebaseConfig);
+const reduxStore = configureStore();
 const rootEl = document.getElementById("root");
 
 const render = () => {
   const App = require("./app/layout/App").default;
   ReactDOM.render(
-    <Provider store={store}>
+    <Provider store={reduxStore} >
       <App />
     </Provider>, rootEl
   );

@@ -5,7 +5,6 @@ import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
@@ -19,13 +18,20 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import ChannelTabs from './ChannelTabs';
 import ToggleDisplay from '../../common/components/toggleDisplay';
+import { Button } from '@material-ui/core';
+import { connect } from 'react-redux';
+import * as Actions from './chatActions';
 
-const tabs = [
-  { label: 'Friends', component: <ChannelTabs /> },
-  { label: 'Xbox', component: <ChannelTabs /> },
-  { label: 'Play Station', component: <ChannelTabs /> },
-  { label: 'Switch', component: <ChannelTabs /> }
-];
+const chatState = (state) => {
+  return {
+    currentGuild: state.chat.currentGuild,
+    //guilds: state.chat.guilds,
+  };
+}
+
+const chatActions = {
+  onGuildClicked: Actions.selectGuild,
+};
 
 const drawerWidth = 240;
 
@@ -90,7 +96,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function MiniDrawer(props) {
+function GuildDrawer(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -103,14 +109,28 @@ export default function MiniDrawer(props) {
     setOpen(false);
   }
 
-  const guildTabs = tabs.map((tab, index) => {
+  const guildTabs = props.guilds.map((guild, index) => {
     return (
-      <ListItem onClick={() => props.onGuildClicked(tab.label)} selected={props.currentGuild === tab.label} button key={tab.label}>
-        <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-        <ListItemText primary={tab.label} />
+      <ListItem button
+        onClick={() => props.onGuildClicked(guild)}
+        selected={props.currentGuild === guild}
+        key={guild}>
+        <ListItemIcon>
+          {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+        </ListItemIcon>
+        <ListItemText primary={guild} />
       </ListItem>
-    )
-  })
+    );
+  });
+
+  const guildContent = props.guilds.map((guild) => {
+    if (props.currentGuild !== guild) return null;
+    return (
+      <ToggleDisplay show={props.currentGuild === guild}>
+        <ChannelTabs currentGuild={props.currentGuild} />
+      </ToggleDisplay>
+    );
+  });
 
   return (
     <div className={classes.root}>
@@ -135,6 +155,9 @@ export default function MiniDrawer(props) {
           <Typography variant="h6" noWrap>
             Chat
           </Typography>
+          <Button style={{ marginLeft: 60 }} onClick={()=> props.toggleTheme()}>
+            Swicth Themes
+          </Button>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -158,13 +181,15 @@ export default function MiniDrawer(props) {
         </div>
         <Divider />
         <List>
-          {guildTabs}
+          { guildTabs }
         </List>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <ChannelTabs />
+        { guildContent }
       </main>
     </div>
   );
 }
+
+export default connect(chatState, chatActions)(GuildDrawer)

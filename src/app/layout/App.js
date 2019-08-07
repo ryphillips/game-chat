@@ -44,7 +44,7 @@ const App = () => {
           onAuthRequired={onAuthRequired} >
           <Route path='/' exact={true} render={() => <Home toggleTheme={toggleDarkTheme} />} />
           <SecureRoute path='/protected' component={Protected} />
-          <SecureRoute path='/chat' component={Chat} />
+          <SecureRoute path='/chat' render={() => <Chat toggleTheme={toggleDarkTheme} />} />
           <Route path='/login' render={() => <Login baseUrl={OKTA.BASE_URL} />} />
           <Route path='/implicit/callback' component={ImplicitCallback} />
         </Security>
