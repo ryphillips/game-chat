@@ -1,21 +1,13 @@
 import React from 'react';
 import {
   List,
-  Card,
-  Typography,
-  ListItem,
   Divider,
-  ListItemAvatar,
-  ListItemText,
-  Avatar,
   TextField,
-  Paper
+  AppBar
 } from '@material-ui/core';
-import { AppBar } from '@material-ui/core';
-
-import Default from '../../assets/discorddefault.png';
 import { databaseRef } from '../../data/firebase';
 import LoadingIndicator from '../../common/components/loading';
+import Message from './components/Message';
 
 const MessageContainer = props => {
   const [currentMessage, setCurrentMessage] = React.useState('');
@@ -25,16 +17,17 @@ const MessageContainer = props => {
 
   React.useEffect(() => {
     databaseRef.ref('messages/' + props.channel).orderByKey()
-      .on('value', function (snapshot) {
+      .limitToLast(100)
+      .on('child_added', function (snapshot, prevKey) {
         if (!snapshot.exists()) {
           setLoading(false);
           return;
         }
-        const hotMessages = Object.values(snapshot.val());
-        const placementUpdate =
-          hotMessages[hotMessages.length - 1].placement + 1;
-        setCurrentPlace(placementUpdate);
-        setMessages(hotMessages);
+        setLoading(true);
+        const newMessage = snapshot.val();
+        messages.push(newMessage);
+        setMessages(messages);
+        setCurrentPlace(newMessage.placement + 1);
         setLoading(false);
       });
   }, [props.channel]);
@@ -61,14 +54,14 @@ const MessageContainer = props => {
 
 
   const chatInputField = (
-    <div style={{ zIndex: 101, flexGrow: 1, position: 'fixed', width: '90%', bottom: 0, marginTop: 50 }}>
-      <AppBar fullWidth position="static" style={{backgroundColor: '#303030'}}>
-        <TextField  style={{ height: '100%', backgroundColor: '#303030'}}
+    <div style={{ zIndex: 101, flexGrow: 1, position: 'fixed', width: '100%', bottom: 0}}>
+      <AppBar color="inherit"  position="static">
+        <TextField style={{ marginLeft: 10, width: '82%' }}
           id="filled-dense-multiline"
           label="Say something..."
-          margin="dense"
+          margin="normal"
           variant="outlined"
-          color="white"
+          color="inherit"
           multiline
           rowsMax="4"
           value={currentMessage}
@@ -84,35 +77,24 @@ const MessageContainer = props => {
     return chatInputField;
   }
 
+
+  const messageList = messages.map((message, index) => (
+    <React.Fragment key={index}>
+      <Message message={message} />
+      <Divider variant="fullWidth" component="li" />
+    </React.Fragment>
+  ));
+
   return (
-    <div >
-      <List fullWidth style={{ overflow: 'auto', zIndex: 100, paddingLeft: 10 }}>
-        {messages.map((message, index) => (
-          <React.Fragment key={index}>
-            <Card raised style={{ margin: 5 }}>
-              <ListItem button alignItems="flex-start">
-                <ListItemAvatar>
-                  <Avatar alt={message.author.name} src={message.author.avatar || Default} />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={message.text}
-                  secondary={
-                    <React.Fragment>
-                      <Typography
-                        component="span"
-                        variant="body2"
-                        style={{ display: 'inline' }}
-                        color="textPrimary">
-                        {message.author.name}
-                      </Typography>
-                    </React.Fragment>} />
-              </ListItem>
-            </Card>
-            <Divider variant="fullWidth" component="li" />
-          </React.Fragment>
-        ))}
+    <div>
+      <List style={{
+        zIndex: 100,
+        paddingLeft: 10,
+        paddingBottom: 80
+        }}>
+        { messageList }
       </List>
-      {chatInputField}
+      { chatInputField }
     </div>
   );
 };

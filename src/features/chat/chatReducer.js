@@ -21,18 +21,9 @@ function selectChannel(state, payload) {
   }
 }
 
-function addMessage(state, payload) {
-  return {
-    ...state,
-    currentChannel: {
-      ...state.currentChannel,
-      messages: [...state.currentChannel.messages, payload.message]
-    }
-  };
-}
 
 export default createReducer(initialState, {
   ['GUILD_SELECTED']: selectGuild,
-  ['MESSAGE_RECEIVED']: addMessage,
+
   ['CHANNEL_SELECTED']: selectChannel
 });

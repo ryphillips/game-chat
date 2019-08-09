@@ -8,7 +8,6 @@ export function selectGuild(guild)  {
   };
 }
 
-
 export function selectChannel(channel) {
   return {
     type: 'CHANNEL_SELECTED',

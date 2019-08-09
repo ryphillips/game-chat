@@ -66,7 +66,7 @@ const useStyles = makeStyles(theme => ({
     whiteSpace: 'nowrap',
   },
   drawerOpen: {
-    background: '#282828',
+    background: 'secondary',
     width: drawerWidth,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
@@ -74,7 +74,7 @@ const useStyles = makeStyles(theme => ({
     }),
   },
   drawerClose: {
-    background: '#303030',
+    background: 'inherit',
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -162,13 +162,12 @@ function GuildDrawer(props) {
           <Typography variant="h6" noWrap>
             Chat
           </Typography>
-          <Button style={{ marginLeft: 60 }} onClick={()=> props.toggleTheme()}>
+          <Button style={{ marginLeft: 60 }} onClick={() => props.toggleTheme()}>
             Swicth Themes
           </Button>
         </Toolbar>
       </AppBar>
-      <Drawer
-        variant="permanent"
+      <Drawer variant="permanent"
         className={clsx(classes.drawer, {
           [classes.drawerOpen]: open,
           [classes.drawerClose]: !open,
@@ -179,8 +178,7 @@ function GuildDrawer(props) {
             [classes.drawerClose]: !open,
           })
         }}
-        open={open}
-      >
+        open={open}>
         <div className={classes.toolbar}>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}

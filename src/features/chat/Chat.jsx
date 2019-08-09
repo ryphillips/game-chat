@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import GuildsDarwer from './GuildsDrawer';
 import withAuth from '@okta/okta-react/dist/withAuth';
-import { connect } from 'react-redux';
 import LoadingIndicator from '../../common/components/loading';
-import * as Actions from './chatActions';
 import { databaseRef } from '../../data/firebase';
 
 class Chat extends Component {
