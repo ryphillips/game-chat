@@ -8,9 +8,7 @@ import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
-
 const drawerWidth = 160;
-
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -22,6 +20,7 @@ const useStyles = makeStyles(theme => ({
     zIndex: 0
   },
   drawerPaper: {
+    background: '#404040',
     width: drawerWidth,
     position: 'fixed'
   },
@@ -36,7 +35,6 @@ const useStyles = makeStyles(theme => ({
   toolbar: theme.mixins.toolbar,
 }));
 
-
 export default function ChannelDrawer(props) {
   const classes = useStyles();
   const [currentChannel, setCurrentChannel] = React.useState('');
@@ -44,11 +42,12 @@ export default function ChannelDrawer(props) {
 
   React.useEffect(() => {
     (async function handleChannels() {
-      const rawChannels = await databaseRef.ref(`channels/${props.currentGuild}`).once('value')
-      const channelNames = Object.keys(rawChannels.val())
+      const rawChannels = await databaseRef.ref(`channels/${props.currentGuild}`).once('value');
+      const  channelNames = Object.keys(rawChannels.val());
       setChannels(channelNames);
+      setCurrentChannel(channelNames[0]);
     })();
-  }, []);
+  }, [props.currentGuild]);
 
   function handleChange(_, newChannel) {
     setCurrentChannel(newChannel);
@@ -56,7 +55,7 @@ export default function ChannelDrawer(props) {
 
   const channelTabs = channels.map(channel => (
     <ListItem button
-      onClick={() => setCurrentChannel(channel)}
+      onClick={(e) => handleChange(e, channel)}
       selected={channel === currentChannel}
       key={channel}>
       <ListItemText primary={'# '  + channel} />
@@ -65,9 +64,9 @@ export default function ChannelDrawer(props) {
 
   const channelContent = channels.map(channel => (
     <div>
-      {channel === currentChannel ? (
+      {channel === currentChannel ?
         <MessageContainer user={props.user} channel={currentChannel} />
-      ) : null}
+      : null}
     </div>
   ));
 
@@ -79,8 +78,7 @@ export default function ChannelDrawer(props) {
         classes={{
           paper: classes.drawerPaper,
           paperAnchorLeft: classes.paperAnchorLeft
-        }}
-      >
+        }}>
         <div className={classes.toolbar} />
         <List>
           {channelTabs}

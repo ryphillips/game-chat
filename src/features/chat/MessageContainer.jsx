@@ -31,7 +31,7 @@ const MessageContainer = props => {
         setMessages(hotMessages);
         setLoading(false);
       });
-  }, []);
+  }, [props.channel]);
 
   function handleTyping(event) {
     setCurrentMessage(event.target.value);

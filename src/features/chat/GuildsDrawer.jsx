@@ -38,6 +38,8 @@ const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
+    color: '#000000',
+
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -66,6 +68,7 @@ const useStyles = makeStyles(theme => ({
     whiteSpace: 'nowrap',
   },
   drawerOpen: {
+    background: '#282828',
     width: drawerWidth,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
@@ -73,6 +76,7 @@ const useStyles = makeStyles(theme => ({
     }),
   },
   drawerClose: {
+    background: '#282828',
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -172,7 +176,7 @@ function GuildDrawer(props) {
           paper: clsx({
             [classes.drawerOpen]: open,
             [classes.drawerClose]: !open,
-          }),
+          })
         }}
         open={open}
       >
