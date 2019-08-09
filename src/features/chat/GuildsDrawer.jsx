@@ -92,7 +92,9 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+    padding: theme.spacing(1),
+    position: 'absolute',
+    width:  '100%'
   },
 }));
 
@@ -127,7 +129,7 @@ function GuildDrawer(props) {
     if (props.currentGuild !== guild) return null;
     return (
       <ToggleDisplay show={props.currentGuild === guild}>
-        <ChannelTabs currentGuild={props.currentGuild} />
+        <ChannelTabs user={props.user} currentGuild={props.currentGuild} />
       </ToggleDisplay>
     );
   });

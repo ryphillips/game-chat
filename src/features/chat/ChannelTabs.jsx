@@ -1,107 +1,96 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import Typography from '@material-ui/core/Typography';
 import MessageContainer from './MessageContainer';
-import TextField from '@material-ui/core/TextField';
-import Default from '../../assets/discorddefault.png';
 import { databaseRef } from '../../data/firebase';
+import Drawer from '@material-ui/core/Drawer';
+import List from '@material-ui/core/List';
+import Divider from '@material-ui/core/Divider';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 
-function TabContainer(props) {
-  return (
-    <Typography component="div" style={{ padding: 8 * 3 }}>
-      {props.children}
-    </Typography>
-  );
-}
+
+const drawerWidth = 170;
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1,
-    width: '100%',
-    backgroundColor: 'transparent',
+    display: 'flex',
   },
+  drawer: {
+    display: 'flex',
+    width: drawerWidth,
+    flexShrink: 0,
+    zIndex: 0
+  },
+  drawerPaper: {
+    width: drawerWidth,
+    position: 'fixed'
+  },
+  paperAnchorLeft: {
+    position: 'fixed',
+    marginLeft: theme.spacing(10) - 5
+  },
+  content: {
+    width: '100%',
+    paddingLeft: theme.spacing(10),
+  },
+  toolbar: theme.mixins.toolbar,
 }));
 
-export default function ChannelTabs(props) {
+
+export default function ChannelDrawer(props) {
   const classes = useStyles();
-  const [currentMessage, setCurrentMessage] = React.useState('');
-  const [currentChannel, setCurrentChannel] = React.useState('Game2');
+  const [currentChannel, setCurrentChannel] = React.useState('');
   const [channels, setChannels] = React.useState([]);
+
   React.useEffect(() => {
-    databaseRef.ref(`channels/${props.currentGuild}`)
-    .once('value')
-    .then(snapshot => {
-      const channelNames = Object.keys(snapshot.val())
+    (async function handleChannels() {
+      const rawChannels = await databaseRef.ref(`channels/${props.currentGuild}`).once('value')
+      const channelNames = Object.keys(rawChannels.val())
       setChannels(channelNames);
-    })
+    })();
   }, []);
 
-  function handleChange(event, newChannel) {
+  function handleChange(_, newChannel) {
     setCurrentChannel(newChannel);
   }
 
-  function handleTyping(event) {
-    const { user, startedTyping } = props
-    //startedTyping(user.name);
-    setCurrentMessage(event.target.value);
-  }
-
-  function handleSubmit(event) {
-    if (event.key !== 'Enter' || !currentMessage) return;
-    event.preventDefault();
-    const { user, addMessage, currentChannel } = props;
-    /*addMessage({
-      user,
-      currentMessage
-    });*/
-    setCurrentMessage('');
-  }
-
   const channelTabs = channels.map(channel => (
-    <Tab value={channel} label={channel} icon={<FavoriteIcon />} />
-  ))
+    <ListItem button
+      onClick={() => setCurrentChannel(channel)}
+      selected={channel === currentChannel}
+      key={channel}>
+      <ListItemText primary={'# '  + channel} />
+    </ListItem>
+  ));
 
   const channelContent = channels.map(channel => (
     <div>
       {channel === currentChannel ? (
-        <TabContainer>
-          <MessageContainer channel={currentChannel} />
-          <TextField fullWidth
-            id="filled-dense-multiline"
-            label="Say something..."
-            margin="dense"
-            variant="filled"
-            color="blue"
-            multiline
-            rowsMax="4"
-            value={currentMessage}
-            onChange={handleTyping}
-            onKeyDown={handleSubmit}
-          />
-        </TabContainer>
+        <MessageContainer user={props.user} channel={currentChannel} />
       ) : null}
     </div>
   ));
 
   return (
     <div className={classes.root}>
-      <AppBar position="sticky" color="default">
-        <Tabs
-          value={currentChannel}
-          onChange={handleChange}
-          variant="scrollable"
-          scrollButtons="on"
-          indicatorColor="primary"
-          textColor="primary"
-        >
+      <Drawer
+        className={classes.drawer}
+        variant="permanent"
+        classes={{
+          paper: classes.drawerPaper,
+          paperAnchorLeft: classes.paperAnchorLeft
+        }}
+      >
+        <div className={classes.toolbar} />
+        <List>
           {channelTabs}
-        </Tabs>
-      </AppBar>
-      { channelContent}
+        </List>
+        <Divider />
+      </Drawer>
+      <main className={classes.content}>
+        <div className={classes.toolbar} />
+        {channelContent}
+      </main>
     </div>
   );
 }
