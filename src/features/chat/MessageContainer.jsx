@@ -8,8 +8,11 @@ import {
   ListItemAvatar,
   ListItemText,
   Avatar,
-  TextField
+  TextField,
+  Paper
 } from '@material-ui/core';
+import { AppBar } from '@material-ui/core';
+
 import Default from '../../assets/discorddefault.png';
 import { databaseRef } from '../../data/firebase';
 import LoadingIndicator from '../../common/components/loading';
@@ -48,27 +51,31 @@ const MessageContainer = props => {
     });
     setCurrentMessage('');
   }
-  
-  
 
   if (loading) {
     return <LoadingIndicator />
   }
 
+
   const chatInputField = (
-    <TextField fullWidth
-      id="filled-dense-multiline"
-      label="Say something..."
-      margin="dense"
-      variant="filled"
-      color="blue"
-      multiline
-      rowsMax="4"
-      value={currentMessage}
-      onChange={handleTyping}
-      onKeyDown={handleSubmit}
-    />
+    <div style={{ zIndex: 101, flexGrow: 1, position: 'fixed', width: '90%', bottom: 0, marginTop: 50 }}>
+      <AppBar fullWidth position="static" style={{backgroundColor: '#303030'}}>
+        <TextField  style={{ height: '100%', backgroundColor: '#303030'}}
+          id="filled-dense-multiline"
+          label="Say something..."
+          margin="dense"
+          variant="outlined"
+          color="white"
+          multiline
+          rowsMax="4"
+          value={currentMessage}
+          onChange={handleTyping}
+          onKeyDown={handleSubmit}
+        />
+      </AppBar>
+    </div>
   );
+
 
   if (!messages) {
     return chatInputField;
@@ -76,7 +83,7 @@ const MessageContainer = props => {
 
   return (
     <div >
-      <List fullWidth style={{ overflow: 'auto', zIndex: 100, }}>
+      <List fullWidth style={{ overflow: 'auto', zIndex: 100, paddingLeft: 10 }}>
         {messages.map((message, index) => (
           <React.Fragment key={index}>
             <Card raised style={{ margin: 5 }}>
@@ -102,7 +109,7 @@ const MessageContainer = props => {
           </React.Fragment>
         ))}
       </List>
-      { chatInputField }
+      {chatInputField}
     </div>
   );
 };

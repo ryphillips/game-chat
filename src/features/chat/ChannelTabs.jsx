@@ -20,17 +20,17 @@ const useStyles = makeStyles(theme => ({
     zIndex: 0
   },
   drawerPaper: {
-    background: '#404040',
+    background: '',
     width: drawerWidth,
     position: 'fixed'
   },
   paperAnchorLeft: {
     position: 'fixed',
-    marginLeft: theme.spacing(10) - 5
+    marginLeft: theme.spacing(10) - 2
   },
   content: {
     width: '100%',
-    paddingLeft: theme.spacing(10),
+    paddingLeft: theme.spacing(8) + 10,
   },
   toolbar: theme.mixins.toolbar,
 }));
