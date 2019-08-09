@@ -21,12 +21,15 @@ const MessageContainer = props => {
   const [currentMessage, setCurrentMessage] = React.useState('');
   const [messages, setMessages] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
-  const [currentPlace, setCurrentPlace] = React.useState();
+  const [currentPlace, setCurrentPlace] = React.useState(1);
 
   React.useEffect(() => {
     databaseRef.ref('messages/' + props.channel).orderByKey()
       .on('value', function (snapshot) {
-        if (!snapshot.exists()) return;
+        if (!snapshot.exists()) {
+          setLoading(false);
+          return;
+        }
         const hotMessages = Object.values(snapshot.val());
         const placementUpdate =
           hotMessages[hotMessages.length - 1].placement + 1;

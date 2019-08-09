@@ -116,7 +116,10 @@ function GuildDrawer(props) {
   const guildTabs = props.guilds.map((guild, index) => {
     return (
       <ListItem button
-        onClick={() => props.onGuildClicked(guild)}
+        onClick={() => {
+          props.onGuildClicked(guild);
+          setOpen(false);
+        }}
         selected={props.currentGuild === guild}
         key={guild}>
         <ListItemIcon>
