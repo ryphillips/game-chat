@@ -6,7 +6,6 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import Home from '../../features/home/Home';
 import Login from '../../features/auth/Login';
-import Protected from '../../Protected';
 import Chat from '../../features/chat/Chat';
 import * as OKTA from '../../config/okta';
 
@@ -19,7 +18,7 @@ function onAuthRequired({ history }) {
 const App = () => {
   const [theme, setTheme] = useState({
     palette: {
-      type: "dark"
+      type: "light"
     }
   });
 
@@ -43,8 +42,7 @@ const App = () => {
           redirect_uri={window.location.origin + '/implicit/callback'}
           onAuthRequired={onAuthRequired} >
           <Route path='/' exact={true} render={() => <Home toggleTheme={toggleDarkTheme} />} />
-          <SecureRoute path='/protected' component={Protected} />
-          <SecureRoute path='/chat' render={() => <Chat toggleTheme={toggleDarkTheme} />} />
+          <SecureRoute path='/chat' render={() => <Chat toggleTheme={toggleDarkTheme} theme={theme} />} />
           <Route path='/login' render={() => <Login baseUrl={OKTA.BASE_URL} />} />
           <Route path='/implicit/callback' component={ImplicitCallback} />
         </Security>

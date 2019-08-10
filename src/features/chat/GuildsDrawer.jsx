@@ -25,7 +25,6 @@ import * as Actions from './chatActions';
 const chatState = (state) => {
   return {
     currentGuild: state.chat.currentGuild,
-    //guilds: state.chat.guilds,
   };
 }
 
@@ -142,11 +141,11 @@ function GuildDrawer(props) {
   return (
     <div className={classes.root}>
       <AppBar
+        color="inherit"
         position="fixed"
         className={clsx(classes.appBar, {
           [classes.appBarShift]: open,
-        })}
-      >
+        })}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -155,15 +154,14 @@ function GuildDrawer(props) {
             edge="start"
             className={clsx(classes.menuButton, {
               [classes.hide]: open,
-            })}
-          >
+            })}>
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
             Chat
           </Typography>
-          <Button style={{ marginLeft: 60 }} onClick={() => props.toggleTheme()}>
-            Swicth Themes
+          <Button style={{ marginLeft: 60 }} onClick={props.toggleTheme}>
+            {props.theme.palette.type === 'dark' ? 'Turn the lights on' : 'Turn the lights off'}
           </Button>
         </Toolbar>
       </AppBar>

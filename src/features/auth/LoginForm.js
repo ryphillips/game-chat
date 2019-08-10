@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import OktaAuth from '@okta/okta-auth-js';
 import { withAuth } from '@okta/okta-react';
-import { databaseRef }  from '../../data/firebase';
-import { auth } from 'firebase';
+import { databaseRef } from '../../data/firebase';
 import {
   CircularProgress,
   Container,
@@ -60,19 +59,6 @@ class LoginForm extends Component {
       password: this.state.password
     })
       .then(async res => {
-        console.log(res)
-        const userId = res.user.id;
-        const user = await databaseRef.ref(`users/${userId}`).once('value');
-        console.log(userId)
-        if (!user.val()) {
-          databaseRef.ref('users').push({
-            userId: {
-              name: 'Ryan',
-              email: this.state.email,
-              avatar: 'none'
-            }
-          });
-        }
         this.setState({
           email: '',
           password: '',
@@ -103,20 +89,18 @@ class LoginForm extends Component {
       state: 'wwedft',
       nonce: 'YHKU',
       idp: config.GOOGLE_IDP,
-    })
-      .then(async tokenOrTokens => {
-        const decodedToken =
-          await this.oktaAuth.token.decode(tokenOrTokens[0].accessToken);
-        const userInfo =
-          await this.oktaAuth.token.getUserInfo(tokenOrTokens[0]);
-        this.props.dispatch(socialUserReceived(userInfo));
-        this.setState({
-          sessionToken: decodedToken.signature
-        });
-      })
-      .catch(console.error);
+    }).then(async tokenOrTokens => {
+      const decodedToken =
+        await this.oktaAuth.token.decode(tokenOrTokens[0].accessToken);
+      const userInfo =
+        await this.oktaAuth.token.getUserInfo(tokenOrTokens[0]);
+      this.props.dispatch(socialUserReceived(userInfo));
+      this.setState({
+        sessionToken: decodedToken.signature
+      });
+    }).catch(console.error);
   }
-
+  
   handlePasswordChange = (e) => {
     this.setState({
       password: e.target.value
@@ -158,16 +142,18 @@ class LoginForm extends Component {
           marginTop: 80,
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center'}}>
+          alignItems: 'center'
+        }}>
           <img height={150} width={150} src={Company} alt="gg" />
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          { message }
+          {message}
           {this.state.authenticating ? <CircularProgress style={{ marginTop: 25 }} /> : null}
           <form onSubmit={this.handleSubmit} noValidate style={{
             width: '100%', // Fix IE 11 issue.
-            marginTop: 10}}>
+            marginTop: 10
+          }}>
             <TextField required fullWidth autoFocus
               variant="outlined"
               margin="normal"
@@ -221,7 +207,7 @@ class LoginForm extends Component {
         <Box mt={5}>
           <Tooltip title="Sign In with Google">
             <Fab style={{ backgroundColor: "transparent" }}
-            variant="extended"
+              variant="extended"
               size="small" onClick={this.googleLogin}
               disabled={false}>
               <FontAwesomeIcon color="white" size="2x" icon={['fab', 'google-plus-g']} />

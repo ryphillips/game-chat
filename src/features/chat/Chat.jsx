@@ -15,14 +15,17 @@ class Chat extends Component {
 
   componentDidMount() {
     this.props.auth.getUser().then(async user => {
-      const guilds = await databaseRef.ref('guilds').once('value');
-      const guildNames = await Object.keys(guilds.val());
-      this.setState({
-        user,
-        guilds: guildNames
-      });
-    })
-    .catch(console.error);
+      databaseRef.ref('users').orderByChild('email')
+        .equalTo(user.email)
+        .once('value', (snapshot) => {
+          const fireUser = Object.values(snapshot.val())[0];
+          const guildNames = Object.values(fireUser.guilds);
+          this.setState({
+            user,
+            guilds: guildNames
+          });
+        });
+    }).catch(console.error);
   }
 
   render() {

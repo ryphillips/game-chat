@@ -26,11 +26,11 @@ const useStyles = makeStyles(theme => ({
   },
   paperAnchorLeft: {
     position: 'fixed',
-    marginLeft: theme.spacing(10) - 2
+    marginLeft: theme.spacing(9) + 2
   },
   content: {
     width: '100%',
-    paddingLeft: theme.spacing(8) + 5,
+    paddingLeft: theme.spacing(8) + 1,
   },
   toolbar: theme.mixins.toolbar,
 }));

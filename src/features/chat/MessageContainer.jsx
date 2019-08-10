@@ -3,7 +3,8 @@ import {
   List,
   Divider,
   TextField,
-  AppBar
+  AppBar,
+  useScrollTrigger
 } from '@material-ui/core';
 import { databaseRef } from '../../data/firebase';
 import LoadingIndicator from '../../common/components/loading';
@@ -15,21 +16,15 @@ const MessageContainer = props => {
   const [loading, setLoading] = React.useState(true);
   const [currentPlace, setCurrentPlace] = React.useState(1);
 
-  React.useEffect(() => {
-    databaseRef.ref('messages/' + props.channel).orderByKey()
-      .limitToLast(100)
-      .on('child_added', function (snapshot, prevKey) {
-        if (!snapshot.exists()) {
-          setLoading(false);
-          return;
-        }
-        setLoading(true);
-        const newMessage = snapshot.val();
-        messages.push(newMessage);
-        setMessages(messages);
-        setCurrentPlace(newMessage.placement + 1);
-        setLoading(false);
-      });
+  React.useEffect(function () {
+    const messageRef = databaseRef.ref('messages/' + props.channel)
+      .orderByKey().limitToLast(100);
+    messageRef.on('child_added', function (snapshot, prevKey) {
+      const newMessage = snapshot.val();
+      setMessages(m => [...m, newMessage]);
+      setCurrentPlace(newMessage.placement + 1);
+    });
+    setLoading(false);
   }, [props.channel]);
 
   function handleTyping(event) {
@@ -42,21 +37,18 @@ const MessageContainer = props => {
     const { user } = props;
     databaseRef.ref('messages').child(props.channel).push({
       text: currentMessage,
-      author: { name: user.name },
+      author: { name: 'Jon Snow' },
       placement: currentPlace
     });
     setCurrentMessage('');
   }
 
-  if (loading) {
-    return <LoadingIndicator />
-  }
-
+  if (loading) return <LoadingIndicator />
 
   const chatInputField = (
-    <div style={{ zIndex: 101, flexGrow: 1, position: 'fixed', width: '100%', bottom: 0}}>
-      <AppBar color="inherit"  position="static">
-        <TextField style={{ marginLeft: 10, width: '82%' }}
+    <div style={{ zIndex: 101, flexGrow: 1, position: 'fixed', width: '100%', bottom: 0 }}>
+      <AppBar color="inherit" position="static" >
+        <TextField style={{ marginLeft: 10, marginBottom: 10, width: '82%' }}
           id="filled-dense-multiline"
           label="Say something..."
           margin="normal"
@@ -72,15 +64,11 @@ const MessageContainer = props => {
     </div>
   );
 
-
-  if (!messages) {
-    return chatInputField;
-  }
-
+  if (!messages) return chatInputField;
 
   const messageList = messages.map((message, index) => (
     <React.Fragment key={index}>
-      <Message message={message} />
+      <Message message={message} key={index} />
       <Divider variant="fullWidth" component="li" />
     </React.Fragment>
   ));
@@ -90,11 +78,12 @@ const MessageContainer = props => {
       <List style={{
         zIndex: 100,
         paddingLeft: 10,
-        paddingBottom: 80
-        }}>
-        { messageList }
+        paddingBottom: 80,
+        width: "100%"
+      }}>
+        {messageList}
       </List>
-      { chatInputField }
+      {chatInputField}
     </div>
   );
 };

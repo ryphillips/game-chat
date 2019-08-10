@@ -25,7 +25,7 @@ export default function Message(props) {
 
   return (
     <Card raised style={{ margin: 5 }}>
-      <ListItem button alignItems="flex-start">
+      <ListItem button alignItems="flex-start" key={props.key}>
         <ListItemAvatar>
           <Avatar alt={message.author.name} src={message.author.avatar || Default} />
         </ListItemAvatar>
