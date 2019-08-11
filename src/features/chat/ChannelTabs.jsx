@@ -7,36 +7,10 @@ import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-
-const drawerWidth = 160;
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-  },
-  drawer: {
-    display: 'flex',
-    width: drawerWidth,
-    flexShrink: 0,
-    zIndex: 102
-  },
-  drawerPaper: {
-    background: '',
-    width: drawerWidth,
-    position: 'fixed'
-  },
-  paperAnchorLeft: {
-    position: 'fixed',
-    marginLeft: theme.spacing(9) + 2
-  },
-  content: {
-    width: '100%',
-    paddingLeft: theme.spacing(8) + 1,
-  },
-  toolbar: theme.mixins.toolbar,
-}));
+import ChannelTabsStyles from './styles/ChannelTabsStyles';
 
 export default function ChannelDrawer(props) {
-  const classes = useStyles();
+  const classes = ChannelTabsStyles();
   const [currentChannel, setCurrentChannel] = React.useState('');
   const [channels, setChannels] = React.useState([]);
 

@@ -4,7 +4,6 @@ import {
   Divider,
   TextField,
   AppBar,
-  useScrollTrigger
 } from '@material-ui/core';
 import { databaseRef } from '../../data/firebase';
 import LoadingIndicator from '../../common/components/loading';

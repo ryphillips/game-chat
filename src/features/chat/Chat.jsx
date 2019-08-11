@@ -22,8 +22,12 @@ class Chat extends Component {
     const usersGuilds = databaseRef.ref('users')
       .orderByChild('email')
       .equalTo(oktaUser.email);
-      
+
     usersGuilds.once('value', (snapshot) => {
+      if (!snapshot.exists()) {
+        this.setState({ user: oktaUser });
+        return;
+      }
       const firebaseUser = Object.values(snapshot.val())[0];
       this.setState({
         user: oktaUser,
