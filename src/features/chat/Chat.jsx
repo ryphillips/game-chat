@@ -9,23 +9,27 @@ class Chat extends Component {
     super(props);
     this.state = {
       user: null,
-      guilds: []
+      guildIds: []
     };
   }
 
   componentDidMount() {
-    this.props.auth.getUser().then(async user => {
-      databaseRef.ref('users').orderByChild('email')
-        .equalTo(user.email)
-        .once('value', (snapshot) => {
-          const fireUser = Object.values(snapshot.val())[0];
-          const guildNames = Object.values(fireUser.guilds);
-          this.setState({
-            user,
-            guilds: guildNames
-          });
-        });
-    }).catch(console.error);
+    this.getUserGuilds();
+  }
+
+  getUserGuilds = async () => {
+    const oktaUser = await this.props.auth.getUser();
+    const usersGuilds = databaseRef.ref('users')
+      .orderByChild('email')
+      .equalTo(oktaUser.email);
+      
+    usersGuilds.once('value', (snapshot) => {
+      const firebaseUser = Object.values(snapshot.val())[0];
+      this.setState({
+        user: oktaUser,
+        guilds: firebaseUser.guilds
+      });
+    });
   }
 
   render() {

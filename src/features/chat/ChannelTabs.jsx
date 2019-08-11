@@ -42,10 +42,11 @@ export default function ChannelDrawer(props) {
 
   React.useEffect(() => {
     (async function handleChannels() {
-      const rawChannels = await databaseRef.ref(`channels/${props.currentGuild}`).once('value');
-      const  channelNames = Object.keys(rawChannels.val());
-      setChannels(channelNames);
-      setCurrentChannel(channelNames[0]);
+      databaseRef.ref(`guilds/${props.currentGuild}/channels`)
+        .once('value', function(snapshot) {
+          setChannels(snapshot.val())
+          setCurrentChannel(Object.keys(snapshot.val())[0]);
+        }).catch(console.error);
     })();
   }, [props.currentGuild]);
 
@@ -53,18 +54,21 @@ export default function ChannelDrawer(props) {
     setCurrentChannel(newChannel);
   }
 
-  const channelTabs = channels.map(channel => (
-    <ListItem button
-      onClick={(e) => handleChange(e, channel)}
-      selected={channel === currentChannel}
-      key={channel}>
-      <ListItemText primary={'# '  + channel} />
-    </ListItem>
-  ));
+  const channelTabs = Object.keys(channels).map((channelId, index) => {
+    const channelName = Object.values(channels)[index];
+    return (
+      <ListItem button
+        onClick={(e) => handleChange(e, channelId)}
+        selected={channelId === currentChannel}
+        key={channelId}>
+        <ListItemText primary={'# '  + channelName} />
+      </ListItem>
+    )
+  });
 
-  const channelContent = channels.map(channel => (
+  const channelContent = Object.keys(channels).map(channelId => (
     <div>
-      {channel === currentChannel ?
+      {channelId === currentChannel ?
         <MessageContainer user={props.user} channel={currentChannel} />
       : null}
     </div>

@@ -34,7 +34,6 @@ const MessageContainer = props => {
   function handleSubmit(event) {
     if (event.key !== 'Enter' || !currentMessage) return;
     event.preventDefault();
-    const { user } = props;
     databaseRef.ref('messages').child(props.channel).push({
       text: currentMessage,
       author: { name: 'Jon Snow' },

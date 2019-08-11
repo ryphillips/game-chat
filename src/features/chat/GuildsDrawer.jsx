@@ -112,15 +112,16 @@ function GuildDrawer(props) {
     setOpen(false);
   }
 
-  const guildTabs = props.guilds.map((guild, index) => {
+  const guildTabs = Object.values(props.guilds).map((guild, index) => {
+    const currKey = Object.keys(props.guilds)[index];
     return (
       <ListItem button
         onClick={() => {
-          props.onGuildClicked(guild);
+          props.onGuildClicked(currKey);
           setOpen(false);
         }}
-        selected={props.currentGuild === guild}
-        key={guild}>
+        selected={props.currentGuild === currKey}
+        key={currKey}>
         <ListItemIcon>
           {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
         </ListItemIcon>
@@ -129,10 +130,10 @@ function GuildDrawer(props) {
     );
   });
 
-  const guildContent = props.guilds.map((guild) => {
-    if (props.currentGuild !== guild) return null;
+  const guildContent = Object.keys(props.guilds).map((guildId, index) => {
+    if (props.currentGuild !== guildId) return null;
     return (
-      <ToggleDisplay show={props.currentGuild === guild}>
+      <ToggleDisplay show={props.currentGuild === guildId}>
         <ChannelTabs user={props.user} currentGuild={props.currentGuild} />
       </ToggleDisplay>
     );
