@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware, compose } from "redux";
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 import thunk from 'redux-thunk';
-import homeReducer from '../reducers/homeReducer';
+import  rootReducer from '../reducers/rootReducer';
 
 export default function configureStore(preloadedState) {
   const isNotProduction = process.env.NODE_ENV !== "production";
@@ -12,15 +12,15 @@ export default function configureStore(preloadedState) {
     composeWithDevTools(...storeEnhancers) : compose(...storeEnhancers);
 
   const store = createStore(
-    homeReducer,
+    rootReducer,
     preloadedState,
     composedEnhancer
   );
 
   if (isNotProduction) {
     if (module.hot) {
-      module.hot.accept("../reducers/homeReducer", () => {
-        const newRootReducer = require("../reducers/homeReducer").default;
+      module.hot.accept("../reducers/rootReducer", () => {
+        const newRootReducer = require("../reducers/rootReducer").default;
         store.replaceReducer(newRootReducer)
       });
     }

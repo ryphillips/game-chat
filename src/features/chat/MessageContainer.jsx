@@ -5,22 +5,32 @@ import {
   TextField,
   AppBar,
 } from '@material-ui/core';
+import { connect } from 'react-redux';
 import { databaseRef } from '../../data/firebase';
 import LoadingIndicator from '../../common/components/loading';
 import Message from './components/Message';
+import { receiveMessage } from './chatActions';
+
+const messagesState = (state) => {
+  return {
+    messages: state.chat.messages.data
+  };
+}
+const messagesActions = {
+  receiveMessage,
+}
 
 const MessageContainer = props => {
   const [currentMessage, setCurrentMessage] = React.useState('');
-  const [messages, setMessages] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [currentPlace, setCurrentPlace] = React.useState(1);
 
   React.useEffect(function () {
     const messageRef = databaseRef.ref('messages/' + props.channel)
       .orderByKey().limitToLast(100);
-    messageRef.on('child_added', function (snapshot, prevKey) {
+    messageRef.on('child_added', function(snapshot) {
       const newMessage = snapshot.val();
-      setMessages(m => [...m, newMessage]);
+      props.receiveMessage(newMessage);
       setCurrentPlace(newMessage.placement + 1);
     });
     setLoading(false);
@@ -86,4 +96,4 @@ const MessageContainer = props => {
   );
 };
 
-export default MessageContainer;
+export default connect(messagesState, messagesActions)(MessageContainer);

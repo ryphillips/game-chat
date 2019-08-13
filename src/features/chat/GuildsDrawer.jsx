@@ -1,14 +1,9 @@
-import React, { Component } from 'react';
-import clsx from 'clsx';
+import React from 'react';
 import { useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
@@ -18,18 +13,20 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import ChannelTabs from './ChannelTabs';
 import ToggleDisplay from '../../common/components/toggleDisplay';
-import { Button } from '@material-ui/core';
+import ChatTopNav from './components/ChatTopNav';
 import { connect } from 'react-redux';
 import * as Actions from './chatActions';
+import { databaseRef } from '../../data/firebase';import ChatTopNav from './components/ChatTopNav';
 
-const chatState = (state) => {
+const guildsState = (state) => {
   return {
-    currentGuild: state.chat.currentGuild,
+    guilds: state.chat.guilds.data,
+    currentGuild: state.chat.guilds.currentGuild,
   };
 }
-
-const chatActions = {
+const guildsActions = {
   onGuildClicked: Actions.selectGuild,
+  onGuildsReceived: Actions.receiveGuilds
 };
 
 function GuildDrawer(props) {
@@ -40,10 +37,19 @@ function GuildDrawer(props) {
   function handleDrawerOpen() {
     setOpen(true);
   }
-
   function handleDrawerClose() {
     setOpen(false);
   }
+
+  React.useEffect(() => {
+    const usersGuilds =
+      databaseRef.ref('users').orderByChild('email').equalTo(props.user.email);
+    usersGuilds.on('value', (snapshot) => {
+      if (!snapshot.exists()) return;
+      const firebaseUser = Object.values(snapshot.val())[0];
+      props.onGuildsReceived(firebaseUser.guilds);
+    });
+  }, [])
 
   const guildTabs = Object.values(props.guilds).map((guild, index) => {
     const currKey = Object.keys(props.guilds)[index];
@@ -74,31 +80,10 @@ function GuildDrawer(props) {
 
   return (
     <div className={classes.root}>
-      <AppBar
-        color="inherit"
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, {
-              [classes.hide]: open,
-            })}>
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            Chat
-          </Typography>
-          <Button style={{ marginLeft: 60 }} onClick={props.toggleTheme}>
-            {props.theme.palette.type === 'dark' ? 'Turn the lights on' : 'Turn the lights off'}
-          </Button>
-        </Toolbar>
-      </AppBar>
+      <ChatTopNav
+        {...props}
+        classes={classes}
+        handleDrawerOpen={handleDrawerOpen} />
       <Drawer variant="permanent"
         className={clsx(classes.drawer, {
           [classes.drawerOpen]: open,
@@ -113,20 +98,21 @@ function GuildDrawer(props) {
         open={open}>
         <div className={classes.toolbar}>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            {theme.direction === 'rtl' ? 
+              <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </div>
         <Divider />
         <List>
-          { guildTabs }
+          {guildTabs}
         </List>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        { guildContent }
+        {guildContent}
       </main>
     </div>
   );
 }
 
-export default connect(chatState, chatActions)(GuildDrawer)
+export default connect(guildsState, guildsActions)(GuildDrawer)

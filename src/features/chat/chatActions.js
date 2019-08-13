@@ -26,13 +26,13 @@ export function typing(userName) {
   };
 }
 
-export function receiveMessages(messages) {
+export function  receiveChannel(channel) {
   return {
-    type: 'MESSAGES_RECEIVED',
+    type: 'CHANNEL_RECEIVED',
     payload: {
-      messages
+      channel
     }
-  };
+  }
 }
 
 export function receiveMessage(message) {
