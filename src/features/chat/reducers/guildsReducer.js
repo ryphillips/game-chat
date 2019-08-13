@@ -2,7 +2,7 @@ import { createReducer } from "../../../common/utils/reducerUtils";
 
 const initialState = {
   currentGuild: null,
-  data: []
+  data: {}
 };
 
 export default createReducer(initialState, {
@@ -18,7 +18,7 @@ export default createReducer(initialState, {
   function(state, payload) {
     return {
       ...state,
-      data: [...state.data, payload.guild]
+      data: payload.guilds
     };
   }
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import MessageContainer from './MessageContainer';
+import MessagesContainer from './MessagesContainer';
 import { databaseRef } from '../../data/firebase';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
@@ -8,28 +8,30 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ChannelTabsStyles from './styles/ChannelTabsStyles';
 import { connect } from 'react-redux';
+import * as Actions from './chatActions';
 
 const channelState = (state) => {
   return {
     channels: state.chat.channels.data,
-    currentChannel: stat.chat.channels.currentChannel
+    currentChannel: state.chat.channels.currentChannel
   };
 };
 const channelActions = {
   selectChannel: Actions.selectChannel,
-  receiveChannel: Actions.receiveChannel
+  receiveChannels: Actions.receiveChannels
 };
 
-export default function ChannelDrawer(props) {
+function ChannelDrawer(props) {
   const classes = ChannelTabsStyles();
+
   React.useEffect(() => {
-    (async function handleChannels() {
-      databaseRef.ref(`guilds/${props.currentGuild}/channels`)
-        .on('child_added', function(snapshot) {
-          props.receiveChannel(snapshot.val())
-        }).catch(console.error);
-    })();
-  }, [props.currentGuild]);
+    databaseRef.ref(`guilds/${props.currentGuild}/channels`)
+      .on('value', function (snapshot) {
+        props.receiveChannels(snapshot.val());
+      });
+  }, []);
+
+  console.log(props);
 
   const channelTabs = Object.keys(props.channels).map((channelId, index) => {
     const channelName = Object.values(props.channels)[index];
@@ -38,7 +40,7 @@ export default function ChannelDrawer(props) {
         onClick={(_) => props.selectChannel(channelId)}
         selected={channelId === props.currentChannel}
         key={channelId}>
-        <ListItemText primary={'# '  + channelName} />
+        <ListItemText primary={'# ' + channelName} />
       </ListItem>
     )
   });
@@ -46,8 +48,8 @@ export default function ChannelDrawer(props) {
   const channelContent = Object.keys(props.channels).map(channelId => (
     <div>
       {channelId === props.currentChannel ?
-        <MessageContainer user={props.user} channelId={props.currentChannel} />
-      : null}
+        <MessagesContainer user={props.user} channelId={props.currentChannel} />
+        : null}
     </div>
   ));
 
@@ -74,4 +76,4 @@ export default function ChannelDrawer(props) {
   );
 }
 
-export default connect(channelActions, channelState)(channelTabs);
+export default connect(channelState, channelActions)(ChannelDrawer);

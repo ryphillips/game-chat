@@ -1,5 +1,13 @@
 import React from 'react';
 import clsx from 'clsx';
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Button,
+} from '@material-ui/core'; 
+import { ChevronRight } from '@material-ui/icons';
 
 const ChatTopNav = (props) => (
   <AppBar color="inherit"
@@ -14,7 +22,7 @@ const ChatTopNav = (props) => (
         edge="start"
         className={clsx(props.classes.menuButton, {
           [props.classes.hide]: props.open})}>
-        <MenuIcon />
+        <ChevronRight />
       </IconButton>
       <Typography variant="h6" noWrap>
         Chat

@@ -8,6 +8,15 @@ export function selectGuild(guild)  {
   };
 }
 
+export function receiveGuilds(guilds) {
+  return {
+    type: 'GUILD_RECEIVED',
+    payload: {
+      guilds
+    }
+  };
+}
+
 export function selectChannel(channel) {
   return {
     type: 'CHANNEL_SELECTED',
@@ -26,13 +35,13 @@ export function typing(userName) {
   };
 }
 
-export function  receiveChannel(channel) {
+export function  receiveChannels(channels) {
   return {
     type: 'CHANNEL_RECEIVED',
     payload: {
-      channel
+      channels
     }
-  }
+  };
 }
 
 export function receiveMessage(message) {

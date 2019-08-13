@@ -10,6 +10,6 @@ export default createReducer(initialState, {
     return {
       ...state,
       data: [...state.data, payload.message]
-    }
+    };
   }
 });

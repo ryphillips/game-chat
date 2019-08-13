@@ -16,34 +16,32 @@ const messagesState = (state) => {
     messages: state.chat.messages.data
   };
 }
-const messagesActions = {
-  receiveMessage,
-}
+const messagesActions = { receiveMessage }
 
 const MessageContainer = props => {
   const [currentMessage, setCurrentMessage] = React.useState('');
   const [loading, setLoading] = React.useState(true);
   const [currentPlace, setCurrentPlace] = React.useState(1);
 
-  React.useEffect(function () {
-    const messageRef = databaseRef.ref('messages/' + props.channel)
+  React.useEffect(function() {
+    const messageRef = databaseRef.ref('messages/' + props.channelId)
       .orderByKey().limitToLast(100);
     messageRef.on('child_added', function(snapshot) {
       const newMessage = snapshot.val();
+      console.log(newMessage)
       props.receiveMessage(newMessage);
       setCurrentPlace(newMessage.placement + 1);
     });
     setLoading(false);
-  }, [props.channel]);
+  }, []);
 
   function handleTyping(event) {
     setCurrentMessage(event.target.value);
   }
-
   function handleSubmit(event) {
     if (event.key !== 'Enter' || !currentMessage) return;
     event.preventDefault();
-    databaseRef.ref('messages').child(props.channel).push({
+    databaseRef.ref('messages/'+props.channelId).push({
       text: currentMessage,
       author: { name: 'Jon Snow' },
       placement: currentPlace
@@ -72,9 +70,9 @@ const MessageContainer = props => {
     </div>
   );
 
-  if (!messages) return chatInputField;
+  if (!props.messages) return chatInputField;
 
-  const messageList = messages.map((message, index) => (
+  const messageList = props.messages.map((message, index) => (
     <React.Fragment key={index}>
       <Message message={message} key={index} />
       <Divider variant="fullWidth" component="li" />

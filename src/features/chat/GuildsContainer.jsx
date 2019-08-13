@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTheme } from '@material-ui/core/styles';
+import clsx from 'clsx';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -11,12 +12,13 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
-import ChannelTabs from './ChannelTabs';
 import ToggleDisplay from '../../common/components/toggleDisplay';
 import ChatTopNav from './components/ChatTopNav';
 import { connect } from 'react-redux';
 import * as Actions from './chatActions';
-import { databaseRef } from '../../data/firebase';import ChatTopNav from './components/ChatTopNav';
+import { databaseRef } from '../../data/firebase';
+import GuildsDrawerStyles from './styles/GuildsDrawerStyles';
+import ChannelsContainer from './ChannelsContainer';
 
 const guildsState = (state) => {
   return {
@@ -42,8 +44,8 @@ function GuildDrawer(props) {
   }
 
   React.useEffect(() => {
-    const usersGuilds =
-      databaseRef.ref('users').orderByChild('email').equalTo(props.user.email);
+    const usersGuilds = databaseRef.ref('users')
+      .orderByChild('email').equalTo(props.user.email);
     usersGuilds.on('value', (snapshot) => {
       if (!snapshot.exists()) return;
       const firebaseUser = Object.values(snapshot.val())[0];
@@ -53,6 +55,7 @@ function GuildDrawer(props) {
 
   const guildTabs = Object.values(props.guilds).map((guild, index) => {
     const currKey = Object.keys(props.guilds)[index];
+    console.log(props.currentGuild)
     return (
       <ListItem button
         onClick={() => {
@@ -73,7 +76,7 @@ function GuildDrawer(props) {
     if (props.currentGuild !== guildId) return null;
     return (
       <ToggleDisplay show={props.currentGuild === guildId}>
-        <ChannelTabs user={props.user} currentGuild={props.currentGuild} />
+        <ChannelsContainer user={props.user} currentGuild={props.currentGuild} />
       </ToggleDisplay>
     );
   });
@@ -83,6 +86,7 @@ function GuildDrawer(props) {
       <ChatTopNav
         {...props}
         classes={classes}
+        open={open}
         handleDrawerOpen={handleDrawerOpen} />
       <Drawer variant="permanent"
         className={clsx(classes.drawer, {

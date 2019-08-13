@@ -1,7 +1,7 @@
 import { createReducer } from "../../../common/utils/reducerUtils";
 
 const initialState = {
-  data: [],
+  data: {},
   currentChannel: null
 };
 
@@ -10,7 +10,7 @@ export default createReducer(initialState, {
   function(state, payload) {
     return {
       ...state,
-      channels: [...state.channels, payload.channel]
+      data: payload.channels
     };
   },
 
@@ -19,6 +19,6 @@ export default createReducer(initialState, {
     return {
       ...state,
       currentChannel: payload.channel
-    }
+    };
   }
 });
