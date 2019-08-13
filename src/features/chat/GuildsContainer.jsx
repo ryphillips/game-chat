@@ -27,7 +27,7 @@ const guildsActions = {
   onGuildsReceived: Actions.receiveGuilds
 };
 
-function GuildDrawer(props) {
+function GuildContainer(props) {
   const classes = GuildsDrawerStyles();
   const [open, setOpen] = React.useState(false);
   function handleDrawerOpen() {
@@ -91,4 +91,4 @@ function GuildDrawer(props) {
   );
 }
 
-export default connect(guildsState, guildsActions)(GuildDrawer)
+export default connect(guildsState, guildsActions)(GuildContainer)
