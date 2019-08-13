@@ -3,7 +3,7 @@ import { useTheme } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { connect } from 'react-redux';
 import * as Actions from './chatActions';
-import { databaseRef } from '../../data/firebase';
+import { databaseRef } from '../../firebase';
 import {
   List,
   Drawer,

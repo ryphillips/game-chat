@@ -6,7 +6,7 @@ import {
   AppBar,
 } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { databaseRef } from '../../data/firebase';
+import { databaseRef } from '../../firebase';
 import LoadingIndicator from '../../common/components/loading';
 import Message from './components/Message';
 import { receiveMessage } from './chatActions';

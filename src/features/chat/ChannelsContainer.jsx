@@ -1,6 +1,6 @@
 import React from 'react';
 import MessagesContainer from './MessagesContainer';
-import { databaseRef } from '../../data/firebase';
+import { databaseRef } from '../../firebase';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
