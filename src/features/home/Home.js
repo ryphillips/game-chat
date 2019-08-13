@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { withAuth } from '@okta/okta-react';
 import Button from '@material-ui/core/Button';
 import LoadingIndicator from '../../common/components/loading';
-import { databaseRef } from '../../data/firebase';
 
 export default withAuth(
 class Home extends Component {

@@ -21,9 +21,8 @@ const channelActions = {
   receiveChannels: Actions.receiveChannels
 };
 
-function ChannelDrawer(props) {
+function ChannelContainer(props) {
   const classes = ChannelTabsStyles();
-
   React.useEffect(() => {
     databaseRef.ref(`guilds/${props.currentGuild}/channels`)
       .on('value', function (snapshot) {
@@ -76,4 +75,4 @@ function ChannelDrawer(props) {
   );
 }
 
-export default connect(channelState, channelActions)(ChannelDrawer);
+export default connect(channelState, channelActions)(ChannelContainer);
