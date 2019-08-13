@@ -1,6 +1,5 @@
 import React from 'react';
 import MessagesContainer from './MessagesContainer';
-import { databaseRef } from '../../firebase';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -10,6 +9,8 @@ import ChannelTabsStyles from './styles/ChannelTabsStyles';
 import { connect } from 'react-redux';
 import * as Actions from './chatActions';
 import { selectChannels, selectCurrentChannel } from './chatSelectors';
+import { ListItemIcon } from '@material-ui/core';
+import AddBox from '@material-ui/icons/AddBoxRounded';
 
 const channelState = (state) => {
   return {
@@ -19,38 +20,47 @@ const channelState = (state) => {
 };
 const channelActions = {
   selectChannel: Actions.selectChannel,
-  receiveChannels: Actions.receiveChannels
+  addChannelsListener: Actions.addChannelsListener
 };
 
 function ChannelContainer(props) {
   const classes = ChannelTabsStyles();
-  React.useEffect(() => {
-    databaseRef.ref(`guilds/${props.currentGuild}/channels`)
-      .on('value', function (snapshot) {
-        props.receiveChannels(snapshot.val());
-      });
-  }, []);
+  React.useEffect(() => 
+    props.addChannelsListener(props.currentGuild), []);
 
-  const channelTabs = Object.keys(props.channels).map((channelId, index) => {
-    const channelName = Object.values(props.channels)[index];
-    return (
-      <ListItem button
-        onClick={(_) => props.selectChannel(channelId)}
-        selected={channelId === props.currentChannel}
-        key={channelId}>
-        <ListItemText key={channelId} primary={'# ' + channelName} />
-      </ListItem>
-    )
-  });
+  const channelKeys = Object.keys(props.channels);
+  const channelData = Object.values(props.channels);
 
-  const channelContent = Object.keys(props.channels).map(channelId => (
-    <div key={channelId}>
-      {channelId === props.currentChannel ?
-        <MessagesContainer user={props.user} channelId={channelId} />
-        : null}
-    </div>
+  const channelTabs = channelKeys.map((channelId, index) => (
+    <ListItem button key={channelId}
+      onClick={(_) => props.selectChannel(channelId)}
+      selected={channelId === props.currentChannel}>
+      <ListItemText key={channelId}
+        primary={'# ' + channelData[index].name} />
+    </ListItem>
   ));
-  
+
+  const channelContent = channelKeys.map(channelId => (
+    <React.Fragment key={channelId}>
+      {channelId === props.currentChannel ?
+        <MessagesContainer user={props.user}
+          channelId={channelId} /> : null}
+    </React.Fragment>
+  ));
+
+  const handleChannelAdd = () => {};
+
+  const addChannel = (
+    <ListItem button
+      onClick={(_) => handleChannelAdd()}
+      key={'ADD_CHANNEL'}>
+      <ListItemIcon>
+        <AddBox />
+      </ListItemIcon>
+      <ListItemText secondary={'Create New Channel'} />
+    </ListItem>
+  );
+
   return (
     <div className={classes.root}>
       <Drawer
@@ -63,6 +73,10 @@ function ChannelContainer(props) {
         <div className={classes.toolbar} />
         <List>
           {channelTabs}
+        </List>
+        <Divider />
+        <List>
+          {addChannel}
         </List>
         <Divider />
       </Drawer>

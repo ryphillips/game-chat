@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { databaseRef } from '../../firebase';
 import LoadingIndicator from '../../common/components/loading';
 import Message from './components/Message';
-import { receiveMessage } from './chatActions';
+import { addMessageListener } from './chatActions';
 import { selectMessages } from './chatSelectors';
 
 const messagesState = (state) => {
@@ -17,24 +17,15 @@ const messagesState = (state) => {
     messages: selectMessages(state)
   };
 }
-const messagesActions = { receiveMessage }
+const messagesActions = { addMessageListener }
 
 const MessageContainer = props => {
   const [currentMessage, setCurrentMessage] = React.useState('');
   const [loading, setLoading] = React.useState(true);
-  const [currentPlace, setCurrentPlace] = React.useState(1);
-
   React.useEffect(function() {
-    const messageRef = databaseRef.ref('messages/' + props.channelId)
-      .orderByKey().limitToLast(100);
-    messageRef.on('child_added', function(snapshot) {
-      const newMessage = snapshot.val();
-      props.receiveMessage(newMessage);
-      setCurrentPlace(newMessage.placement + 1);
-    });
+    props.addMessageListener(props.channelId);
     setLoading(false);
   }, []);
-
   function handleTyping(event) {
     setCurrentMessage(event.target.value);
   }
@@ -43,8 +34,7 @@ const MessageContainer = props => {
     event.preventDefault();
     databaseRef.ref('messages/'+props.channelId).push({
       text: currentMessage,
-      author: { name: 'Jon Snow' },
-      placement: currentPlace
+      author: { name: 'Jon Snow' }
     });
     setCurrentMessage('');
   }

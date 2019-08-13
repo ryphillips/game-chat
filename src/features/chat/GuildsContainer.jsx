@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import * as Actions from './chatActions';
-import { databaseRef } from '../../firebase';
 import {
   ListItem,
   ListItemIcon,
@@ -24,28 +23,15 @@ const guildsState = (state) => {
 }
 const guildsActions = {
   onGuildClicked: Actions.selectGuild,
-  onGuildsReceived: Actions.receiveGuilds
+  addGuildsListener: Actions.addGuildsListener
 };
 
 function GuildContainer(props) {
   const classes = GuildsDrawerStyles();
   const [open, setOpen] = React.useState(false);
-  function handleDrawerOpen() {
-    setOpen(true);
-  }
-  function handleDrawerClose() {
-    setOpen(false);
-  }
-
-  React.useEffect(() => {
-    const usersGuilds = databaseRef.ref('users')
-      .orderByChild('email').equalTo(props.user.email);
-    usersGuilds.on('value', (snapshot) => {
-      if (!snapshot.exists()) return;
-      const firebaseUser = Object.values(snapshot.val())[0];
-      props.onGuildsReceived(firebaseUser.guilds);
-    });
-  }, [])
+  React.useEffect(() => props.addGuildsListener(props.user), []);
+  function handleDrawerOpen() { setOpen(true); }
+  function handleDrawerClose() { setOpen(false); }
 
   const keys = Object.keys(props.guilds);
   const guildTabs = Object.values(props.guilds).map((guild, index) => {
