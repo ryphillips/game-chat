@@ -10,10 +10,11 @@ import { databaseRef } from '../../firebase';
 import LoadingIndicator from '../../common/components/loading';
 import Message from './components/Message';
 import { receiveMessage } from './chatActions';
+import { selectMessages } from './chatSelectors';
 
 const messagesState = (state) => {
   return {
-    messages: state.chat.messages.data
+    messages: selectMessages(state)
   };
 }
 const messagesActions = { receiveMessage }
@@ -28,7 +29,6 @@ const MessageContainer = props => {
       .orderByKey().limitToLast(100);
     messageRef.on('child_added', function(snapshot) {
       const newMessage = snapshot.val();
-      console.log(newMessage)
       props.receiveMessage(newMessage);
       setCurrentPlace(newMessage.placement + 1);
     });
@@ -74,7 +74,7 @@ const MessageContainer = props => {
 
   const messageList = props.messages.map((message, index) => (
     <React.Fragment key={index}>
-      <Message message={message} key={index} />
+      <Message message={message}  />
       <Divider variant="fullWidth" component="li" />
     </React.Fragment>
   ));

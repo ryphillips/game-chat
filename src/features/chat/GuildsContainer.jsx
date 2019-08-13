@@ -1,31 +1,25 @@
 import React from 'react';
-import { useTheme } from '@material-ui/core/styles';
-import clsx from 'clsx';
 import { connect } from 'react-redux';
 import * as Actions from './chatActions';
 import { databaseRef } from '../../firebase';
 import {
-  List,
-  Drawer,
-  Divider,
-  IconButton,
-  ChevronLeftIcon,
-  ChevronRightIcon,
   ListItem,
   ListItemIcon,
   ListItemText,
-  InboxIcon,
-  MailIcon
-} from '@material-ui/core'
+} from '@material-ui/core';
+import MailIcon from '@material-ui/icons/MailRounded';
+import InboxIcon from '@material-ui/icons/InboxRounded';
 import ToggleDisplay from '../../common/components/toggleDisplay';
 import ChatTopNav from './components/ChatTopNav';
 import GuildsDrawerStyles from './styles/GuildsDrawerStyles';
 import ChannelsContainer from './ChannelsContainer';
+import GuildContent from './components/GuildsContent';
+import { selectGuilds, selectCurrentGuild } from './chatSelectors';
 
 const guildsState = (state) => {
   return {
-    guilds: state.chat.guilds.data,
-    currentGuild: state.chat.guilds.currentGuild,
+    guilds: selectGuilds(state),
+    currentGuild: selectCurrentGuild(state)
   };
 }
 const guildsActions = {
@@ -35,9 +29,7 @@ const guildsActions = {
 
 function GuildDrawer(props) {
   const classes = GuildsDrawerStyles();
-  const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-
   function handleDrawerOpen() {
     setOpen(true);
   }
@@ -55,9 +47,9 @@ function GuildDrawer(props) {
     });
   }, [])
 
+  const keys = Object.keys(props.guilds);
   const guildTabs = Object.values(props.guilds).map((guild, index) => {
-    const currKey = Object.keys(props.guilds)[index];
-    console.log(props.currentGuild)
+    const currKey = keys[index];
     return (
       <ListItem button
         onClick={() => {
@@ -74,49 +66,27 @@ function GuildDrawer(props) {
     );
   });
 
-  const guildContent = Object.keys(props.guilds).map((guildId, index) => {
+  const guildContent = keys.map((guildId, index) => {
     if (props.currentGuild !== guildId) return null;
     return (
-      <ToggleDisplay show={props.currentGuild === guildId}>
-        <ChannelsContainer user={props.user} currentGuild={props.currentGuild} />
+      <ToggleDisplay key={guildId} show={props.currentGuild === guildId}>
+        <ChannelsContainer user={props.user}
+          currentGuild={props.currentGuild} />
       </ToggleDisplay>
     );
   });
 
   return (
     <div className={classes.root}>
-      <ChatTopNav
+      <ChatTopNav open={open}
         {...props}
         classes={classes}
-        open={open}
         handleDrawerOpen={handleDrawerOpen} />
-      <Drawer variant="permanent"
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
-        })}
-        classes={{
-          paper: clsx({
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-          })
-        }}
-        open={open}>
-        <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? 
-              <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
-        </div>
-        <Divider />
-        <List>
-          {guildTabs}
-        </List>
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        {guildContent}
-      </main>
+      <GuildContent open={open}
+        classes={classes}
+        guildTabs={guildTabs}
+        guildContent={guildContent}
+        handleDrawerClose={handleDrawerClose} />
     </div>
   );
 }

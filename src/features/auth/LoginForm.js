@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import OktaAuth from '@okta/okta-auth-js';
 import { withAuth } from '@okta/okta-react';
-import { databaseRef } from '../../data/firebase';
 import {
   CircularProgress,
   Container,

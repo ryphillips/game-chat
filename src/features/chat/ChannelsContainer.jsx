@@ -9,11 +9,12 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ChannelTabsStyles from './styles/ChannelTabsStyles';
 import { connect } from 'react-redux';
 import * as Actions from './chatActions';
+import { selectChannels, selectCurrentChannel } from './chatSelectors';
 
 const channelState = (state) => {
   return {
-    channels: state.chat.channels.data,
-    currentChannel: state.chat.channels.currentChannel
+    channels: selectChannels(state),
+    currentChannel: selectCurrentChannel(state)
   };
 };
 const channelActions = {
@@ -30,8 +31,6 @@ function ChannelContainer(props) {
       });
   }, []);
 
-  console.log(props);
-
   const channelTabs = Object.keys(props.channels).map((channelId, index) => {
     const channelName = Object.values(props.channels)[index];
     return (
@@ -39,19 +38,19 @@ function ChannelContainer(props) {
         onClick={(_) => props.selectChannel(channelId)}
         selected={channelId === props.currentChannel}
         key={channelId}>
-        <ListItemText primary={'# ' + channelName} />
+        <ListItemText key={channelId} primary={'# ' + channelName} />
       </ListItem>
     )
   });
 
   const channelContent = Object.keys(props.channels).map(channelId => (
-    <div>
+    <div key={channelId}>
       {channelId === props.currentChannel ?
-        <MessagesContainer user={props.user} channelId={props.currentChannel} />
+        <MessagesContainer user={props.user} channelId={channelId} />
         : null}
     </div>
   ));
-
+  
   return (
     <div className={classes.root}>
       <Drawer
