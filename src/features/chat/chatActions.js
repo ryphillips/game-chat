@@ -84,3 +84,11 @@ export function addMessageListener(channelId) {
     });
   };
 }
+
+export function addMessage(text, channelId) {
+  databaseRef.ref('messages/' + channelId).push({
+    text: text,
+    author: { name: 'Jon Snow' }
+  });
+}
+export function helo() {}

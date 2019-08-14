@@ -6,21 +6,20 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@material-ui/core';
-import MailIcon from '@material-ui/icons/MailRounded';
-import InboxIcon from '@material-ui/icons/InboxRounded';
 import ToggleDisplay from '../../common/components/toggleDisplay';
 import ChatTopNav from './components/ChatTopNav';
 import GuildsDrawerStyles from './styles/GuildsDrawerStyles';
 import ChannelsContainer from './ChannelsContainer';
 import GuildContent from './components/GuildsContent';
 import { selectGuilds, selectCurrentGuild } from './chatSelectors';
+import { Forum } from '@material-ui/icons';
 
 const guildsState = (state) => {
   return {
     guilds: selectGuilds(state),
     currentGuild: selectCurrentGuild(state)
   };
-}
+};
 const guildsActions = {
   onGuildClicked: Actions.selectGuild,
   addGuildsListener: Actions.addGuildsListener
@@ -29,38 +28,38 @@ const guildsActions = {
 function GuildContainer(props) {
   const classes = GuildsDrawerStyles();
   const [open, setOpen] = React.useState(false);
+  const handleDrawerOpen = () => setOpen(true);
+  const handleDrawerClose = () => setOpen(false);
   React.useEffect(() => props.addGuildsListener(props.user), []);
-  function handleDrawerOpen() { setOpen(true); }
-  function handleDrawerClose() { setOpen(false); }
-
   const keys = Object.keys(props.guilds);
-  const guildTabs = Object.values(props.guilds).map((guild, index) => {
-    const currKey = keys[index];
+  const guilds = Object.values(props.guilds)
+
+  const guildTabs = guilds.map((guild, i) => {
+    const currKey = keys[i];
     return (
-      <ListItem button
+      <ListItem button key={currKey}
         onClick={() => {
           props.onGuildClicked(currKey);
           setOpen(false);
         }}
-        selected={props.currentGuild === currKey}
-        key={currKey}>
+        selected={props.currentGuild === currKey} >
         <ListItemIcon>
-          {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+          <Forum />
         </ListItemIcon>
         <ListItemText primary={guild} />
       </ListItem>
     );
   });
 
-  const guildContent = keys.map((guildId, index) => {
-    if (props.currentGuild !== guildId) return null;
-    return (
-      <ToggleDisplay key={guildId} show={props.currentGuild === guildId}>
-        <ChannelsContainer user={props.user}
-          currentGuild={props.currentGuild} />
-      </ToggleDisplay>
-    );
-  });
+  const guildContent = keys.map((guildId) => (
+    <React.Fragment key={guildId} >
+      {props.currentGuild !== guildId ? null :
+        <ToggleDisplay show={props.currentGuild === guildId}>
+          <ChannelsContainer user={props.user}
+            currentGuild={props.currentGuild} />
+        </ToggleDisplay>}
+    </React.Fragment>
+  ));
 
   return (
     <div className={classes.root}>

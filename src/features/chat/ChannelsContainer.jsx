@@ -9,8 +9,9 @@ import ChannelTabsStyles from './styles/ChannelTabsStyles';
 import { connect } from 'react-redux';
 import * as Actions from './chatActions';
 import { selectChannels, selectCurrentChannel } from './chatSelectors';
-import { ListItemIcon } from '@material-ui/core';
+import { ListItemIcon, Typography } from '@material-ui/core';
 import AddBox from '@material-ui/icons/AddBoxRounded';
+import { Chat } from '@material-ui/icons';
 
 const channelState = (state) => {
   return {
@@ -20,14 +21,13 @@ const channelState = (state) => {
 };
 const channelActions = {
   selectChannel: Actions.selectChannel,
-  addChannelsListener: Actions.addChannelsListener
+  addChannelsListener: Actions.addChannelsListener,
 };
 
 function ChannelContainer(props) {
   const classes = ChannelTabsStyles();
-  React.useEffect(() => 
+  React.useEffect(() =>
     props.addChannelsListener(props.currentGuild), []);
-
   const channelKeys = Object.keys(props.channels);
   const channelData = Object.values(props.channels);
 
@@ -35,29 +35,35 @@ function ChannelContainer(props) {
     <ListItem button key={channelId}
       onClick={(_) => props.selectChannel(channelId)}
       selected={channelId === props.currentChannel}>
-      <ListItemText key={channelId}
-        primary={'# ' + channelData[index].name} />
+      <ListItemIcon>
+        <Chat />
+      </ListItemIcon>
+      <Typography align="left" variant="subtitle1" component="h1">
+        {'# '+channelData[index].name}
+      </Typography>
     </ListItem>
   ));
 
   const channelContent = channelKeys.map(channelId => (
     <React.Fragment key={channelId}>
-      {channelId === props.currentChannel ?
+      {channelId !== props.currentChannel ? null :
         <MessagesContainer user={props.user}
-          channelId={channelId} /> : null}
+          channelId={channelId} />}
     </React.Fragment>
   ));
 
-  const handleChannelAdd = () => {};
+  
+
+  const handleChannelAdd = () => { };
 
   const addChannel = (
     <ListItem button
       onClick={(_) => handleChannelAdd()}
       key={'ADD_CHANNEL'}>
-      <ListItemIcon>
+      <ListItemIcon  >
         <AddBox />
       </ListItemIcon>
-      <ListItemText secondary={'Create New Channel'} />
+      <ListItemText secondary={'Add a Channel'} />
     </ListItem>
   );
 

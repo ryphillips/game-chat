@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core';
 import {
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
 } from '@material-ui/icons';
 import { useTheme } from '@material-ui/core/styles';
 import clsx from 'clsx';
