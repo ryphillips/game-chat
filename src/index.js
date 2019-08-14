@@ -9,7 +9,6 @@ import { initializeApp } from 'firebase';
 initializeApp(firebaseConfig);
 const reduxStore = configureStore();
 const rootEl = document.getElementById("root");
-
 const render = () => {
   const App = require("./app/layout/App").default;
   ReactDOM.render(
@@ -18,7 +17,6 @@ const render = () => {
     </Provider>, rootEl
   );
 };
-
 if (process.env.NODE_ENV !== "production") {
   if (module.hot) {
     module.hot.accept("./app/layout/App", () => {
@@ -27,5 +25,4 @@ if (process.env.NODE_ENV !== "production") {
   }
 }
 
-render();
-serviceWorker.register();
+serviceWorker.register(render());

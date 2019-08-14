@@ -91,4 +91,3 @@ export function addMessage(text, channelId) {
     author: { name: 'Jon Snow' }
   });
 }
-export function helo() {}
