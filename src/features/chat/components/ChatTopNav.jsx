@@ -8,6 +8,8 @@ import {
   Button,
 } from '@material-ui/core'; 
 import { ChevronRight } from '@material-ui/icons';
+import Profile from '../../../common/components/Profile';
+
 
 const ChatTopNav = (props) => (
   <AppBar color="inherit"
@@ -32,6 +34,7 @@ const ChatTopNav = (props) => (
         {props.theme.palette.type === 'dark' ?
           'Turn the lights on' : 'Turn the lights off'}
       </Button>
+      <Profile user={props.user} />
     </Toolbar>
   </AppBar>
 );

@@ -7,50 +7,54 @@ import Default from '../../assets/discorddefault.png';
 
 const useStyles = makeStyles(theme => ({
   root: {
+    position: 'absolute',
     display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    minHeight: 'fit-content'
+    flexDirection: 'row',
+    right: 50,
   },
   avatar: {
-    width: 60,
-    height: 60
+    width: 40,
+    height: 40,
+    marginTop: theme.spacing(1),
+    marginRight: theme.spacing(1)
+  },
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginLeft: theme.spacing(1),
   },
   name: {
-    marginTop: theme.spacing(1)
+   marginBottom: -1
   }
 }));
 
 const Profile = props => {
   const { className, ...rest } = props;
-
   const classes = useStyles();
-
   const user = {
-    name: props.user ? props.user.name : 'Anon',
+    name: props.user ? props.user.name || props.user.email : 'Anon',
     avatar: props.user ? props.user.avatar || Default : Default,
     bio: props.user.email
   };
-
   return (
-    <div
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
+    <div {...rest}
+      className={clsx(classes.root, className)}>
       <Avatar
         alt="Person"
         className={classes.avatar}
         component={RouterLink}
         src={user.avatar}
-        to="/settings"
-      />
+        to="/settings" />
+        <div className={classes.details}>  
       <Typography
         className={classes.name}
-        variant="h4"
-      >
+        variant="h6">
         {user.name}
       </Typography>
-      <Typography variant="body2">{user.bio}</Typography>
+      <Typography variant="subtitle2">
+        {user.bio}
+      </Typography>
+      </div>
     </div>
   );
 };

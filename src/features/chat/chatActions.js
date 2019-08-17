@@ -56,7 +56,7 @@ export function receiveMessage(message) {
 export function addChannelsListener(guildId) {
   return (dispatch) => {
     databaseRef.ref(`guilds/${guildId}/channels`)
-      .on('value', function (snapshot) {
+      .on('value', function(snapshot) {
         dispatch(receiveChannels(snapshot.val()));
       });
   };
@@ -65,9 +65,9 @@ export function addChannelsListener(guildId) {
 export function addGuildsListener(user) {
   return (dispatch) => {
     const usersGuilds = databaseRef.ref('users')
-      .orderByChild('email').equalTo(user.email);
-    usersGuilds.on('value', (snapshot) => {
-      if (!snapshot.exists()) return;
+      .orderByChild('email')
+      .equalTo(user.email);
+    usersGuilds.on('value', function(snapshot) {
       const firebaseUser = Object.values(snapshot.val())[0];
       dispatch(receiveGuilds(firebaseUser.guilds));
     });
@@ -79,8 +79,7 @@ export function addMessageListener(channelId) {
     const messageRef = databaseRef.ref('messages/' + channelId)
       .orderByKey().limitToLast(100);
     messageRef.on('child_added', function (snapshot) {
-      const newMessage = snapshot.val();
-      dispatch(receiveMessage(newMessage));
+      dispatch(receiveMessage(snapshot.val()));
     });
   };
 }

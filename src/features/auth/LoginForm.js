@@ -15,8 +15,9 @@ import {
   Tooltip,
   Fab,
   Box,
+  SvgIcon,
 } from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import GoogleIcon from '../../assets/search.svg';
 import MessageBar from '../../common/components/MessageBar';
 import Company from '../../assets/company.png';
 import * as config from '../../config/okta';
@@ -206,10 +207,10 @@ class LoginForm extends Component {
         <Box mt={5}>
           <Tooltip title="Sign In with Google">
             <Fab style={{ backgroundColor: "transparent" }}
-              variant="extended"
+              variant="round"
               size="small" onClick={this.googleLogin}
               disabled={false}>
-              <FontAwesomeIcon color="white" size="2x" icon={['fab', 'google-plus-g']} />
+            <img src={GoogleIcon} alt="google" height={45} width={45} />
             </Fab>
           </Tooltip>
         </Box>

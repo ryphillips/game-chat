@@ -15,7 +15,7 @@ const ChatInput = ({ channelId }) => {
   }
   return (
     <div style={{ zIndex: 101, flexGrow: 1, position: 'fixed', width: '100%', bottom: 0 }}>
-      <AppBar color="" position="static" >
+      <AppBar color="inherit" position="static" >
         <TextField style={{ marginLeft: 10, marginBottom: 10, width: '82%' }}
           id="filled-dense-multiline"
           label="Say something..."
@@ -27,6 +27,7 @@ const ChatInput = ({ channelId }) => {
           value={currentMessage}
           onChange={handleTyping}
           onKeyDown={handleSubmit}
+          color="white"
         />
       </AppBar>
     </div>
