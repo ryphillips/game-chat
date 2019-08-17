@@ -1,5 +1,5 @@
 import React from 'react';
-import { addMessage } from './chatActions';
+import { addMessage } from '../chatActions';
 import { AppBar, TextField } from '@material-ui/core'
 
 const ChatInput = ({ channelId }) => {

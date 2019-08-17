@@ -12,11 +12,10 @@ export default function AddChannelModal(props) {
   const [name, setName] = React.useState(''); 
   function handleClickOpen() { setOpen(true); }
   function handleClose() { setOpen(false); }
-
   function handleAddChannel() {
     addChannel()
   }
-
+  
   return (
     <div>
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>

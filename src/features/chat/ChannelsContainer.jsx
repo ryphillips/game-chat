@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import * as Actions from './chatActions';
+import { selectChannel, addChannelsListener } from './chatActions';
 import { selectChannels, selectCurrentChannel } from './chatSelectors';
 import PropTypes from 'prop-types';
 import ChannelContent from './components/ChannelContent';
@@ -11,10 +11,7 @@ const channelState = (state) => {
     currentChannel: selectCurrentChannel(state)
   };
 };
-const channelActions = {
-  selectChannel: Actions.selectChannel,
-  addChannelsListener: Actions.addChannelsListener,
-};
+const channelActions = { selectChannel, addChannelsListener };
 function ChannelContainer(props) {
   React.useEffect(() =>
     props.addChannelsListener(props.currentGuild), []);
@@ -25,4 +22,7 @@ ChannelContainer.propTypes =  {
   currentChannel: PropTypes.string
 };
 
-export default connect(channelState, channelActions)(ChannelContainer);
+export default connect(
+  channelState,
+  channelActions
+)(ChannelContainer);
