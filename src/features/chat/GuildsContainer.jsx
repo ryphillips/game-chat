@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import * as Actions from './chatActions';
+import { addGuildsListener, selectGuild } from  './chatActions';
 import ChatTopNav from './components/ChatTopNav';
-import GuildsDrawerStyles from './styles/GuildsDrawerStyles';
 import GuildContent from './components/GuildsContent';
 import { selectGuilds, selectCurrentGuild } from './chatSelectors';
 import PropTypes from 'prop-types';
@@ -14,32 +13,23 @@ function guildsState(state) {
   };
 }
 const guildsActions = {
-  onGuildClicked: Actions.selectGuild,
-  addGuildsListener: Actions.addGuildsListener
+  onGuildClicked: selectGuild,
+  addGuildsListener
 };
 
-function GuildContainer(props) {
-  const classes = GuildsDrawerStyles();
+function GuildsContainer(props) {
   const [open, setOpen] = React.useState(false);
-  const handleDrawerOpen = () => setOpen(true);
-  const handleDrawerClose = () => setOpen(false);
-  React.useEffect(() => 
-    props.addGuildsListener(props.user), []);
+  React.useEffect(() => props.addGuildsListener(props.user), []);
   return (
-    <div className={classes.root}>
-      <ChatTopNav open={open}
-        {...props}
-        classes={classes}
-        handleDrawerOpen={handleDrawerOpen} />
-      <GuildContent open={open}
-        classes={classes}
-        {...props}
-        handleDrawerClose={handleDrawerClose} />
-    </div>
+    <React.Fragment>
+      <ChatTopNav open={open} {...props}
+        handleDrawerOpen={() => setOpen(true)} />
+      <GuildContent open={open} {...props}
+        handleDrawerClose={() => setOpen(false)} />
+    </React.Fragment>
   );
 }
-
-GuildContainer.propTypes = {
+GuildsContainer.propTypes = {
   guilds: PropTypes.object,
   currentGuild: PropTypes.string
 };
@@ -47,4 +37,4 @@ GuildContainer.propTypes = {
 export default connect(
   guildsState,
   guildsActions
-)(GuildContainer)
+)(GuildsContainer);

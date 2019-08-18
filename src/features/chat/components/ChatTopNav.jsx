@@ -9,21 +9,24 @@ import {
 } from '@material-ui/core'; 
 import { ChevronRight } from '@material-ui/icons';
 import Profile from '../../../common/components/Profile';
+import GuildsDrawerStyles from '../styles/GuildsDrawerStyles';
 
 
-const ChatTopNav = (props) => (
+const ChatTopNav = (props) => {
+  const classes = GuildsDrawerStyles();
+  return (
   <AppBar color="inherit"
     position="fixed"
-    className={clsx(props.classes.appBar, {
-      [props.classes.appBarShift]: props.open})}>
+    className={clsx(classes.appBar, {
+      [classes.appBarShift]: props.open})}>
     <Toolbar>
       <IconButton
         color="inherit"
         aria-label="open drawer"
         onClick={props.handleDrawerOpen}
         edge="start"
-        className={clsx(props.classes.menuButton, {
-          [props.classes.hide]: props.open})}>
+        className={clsx(classes.menuButton, {
+          [classes.hide]: props.open})}>
         <ChevronRight />
       </IconButton>
       <Typography variant="h6" noWrap>
@@ -37,6 +40,7 @@ const ChatTopNav = (props) => (
       <Profile user={props.user} />
     </Toolbar>
   </AppBar>
-);
+  );
+};
 
 export default ChatTopNav;

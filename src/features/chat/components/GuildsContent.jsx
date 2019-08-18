@@ -17,18 +17,15 @@ import {
   ChevronRight,
   Forum
 } from '@material-ui/icons';
+import GuildsDrawerStyles from '../styles/GuildsDrawerStyles';
 
 const GuildsContent = props => {
-  const {
-    classes,
-    open,
-    handleDrawerClose,
-    guilds,
-  } = props;
+  const { open, handleDrawerClose, guilds } = props;
   const theme = useTheme();
+  const classes = GuildsDrawerStyles();
   const keys = Object.keys(guilds);
   const guildsContent = Object.values(guilds);
-  
+
   const guildTabs = guildsContent.map((guild, i) => {
     const currKey = keys[i];
     return (

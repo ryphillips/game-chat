@@ -11,18 +11,18 @@ function messagesState(state) {
   };
 }
 const messagesActions = { addMessageListener }
-const MessageContainer = props => {
+const MessagesContainer = props => {
   React.useEffect(() =>
     props.addMessageListener(props.channelId), []);
   return (
     <MessagesContent messages={props.messages} />
   );
 };
-MessageContainer.propTypes = {
+MessagesContainer.propTypes = {
   messages: PropTypes.array
 };
 
 export default connect(
   messagesState,
   messagesActions
-)(MessageContainer);
+)(MessagesContainer);

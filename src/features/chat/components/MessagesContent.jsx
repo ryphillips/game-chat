@@ -1,10 +1,20 @@
 import React from 'react';
 import ChatInput from './ChatInput';
 import Message from './Message'
-import { List, Divider } from '@material-ui/core';
+import { List, Divider, CircularProgress } from '@material-ui/core';
 
 export default function MessagesContent(props) {
-  if (!props.messages) return <ChatInput channelId={props.channelId} />
+  if (true/*!props.messages*/) {
+    return (
+    <React.Fragment>
+      <Message message={{
+        author: { name: 'Channel Bot' },
+        text: 'Welcome to the channel start chatting!'
+      }} />
+      <ChatInput channelId={props.channelId} />
+    </React.Fragment>
+    );
+  }
   const messageList = props.messages.map((message, index) => (
     <React.Fragment key={index}>
       <Message message={message} />

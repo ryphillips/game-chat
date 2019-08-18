@@ -5,24 +5,24 @@ import { selectChannels, selectCurrentChannel } from './chatSelectors';
 import PropTypes from 'prop-types';
 import ChannelContent from './components/ChannelContent';
 
-const channelState = (state) => {
+function channelsState(state) {
   return {
     channels: selectChannels(state),
     currentChannel: selectCurrentChannel(state)
   };
-};
-const channelActions = { selectChannel, addChannelsListener };
-function ChannelContainer(props) {
+}
+const channelsActions = { selectChannel, addChannelsListener };
+function ChannelsContainer(props) {
   React.useEffect(() =>
     props.addChannelsListener(props.currentGuild), []);
   return <ChannelContent {...props}/>;
 }
-ChannelContainer.propTypes =  {
+ChannelsContainer.propTypes =  {
   channels: PropTypes.object,
   currentChannel: PropTypes.string
 };
 
 export default connect(
-  channelState,
-  channelActions
-)(ChannelContainer);
+  channelsState,
+  channelsActions
+)(ChannelsContainer);
