@@ -31,5 +31,3 @@ jobs:
 
       # run tests!
       - run: yarn test
-
-      - run: heroku git:remote -a lobby-chat
