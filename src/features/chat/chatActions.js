@@ -65,8 +65,7 @@ export function addChannelsListener(guildId) {
 export function addGuildsListener(user) {
   return (dispatch) => {
     const usersGuilds = databaseRef.ref('users')
-      .orderByChild('email')
-      .equalTo(user.email);
+      .orderByChild('email').equalTo(user.email);
     usersGuilds.on('value', function(snapshot) {
       const firebaseUser = Object.values(snapshot.val())[0];
       dispatch(receiveGuilds(firebaseUser.guilds));
@@ -84,9 +83,12 @@ export function addMessageListener(channelId) {
   };
 }
 
-export function addMessage(text, channelId) {
-  databaseRef.ref('messages/' + channelId).push({
-    text: text,
-    author: { name: 'Jon Snow' }
-  });
+export function addMessage(text, channelId, user) {
+  databaseRef.ref('messages/'+channelId)
+    .push({
+      text: text,
+      author: user
+    });
 }
+
+export function addChannel(name, )

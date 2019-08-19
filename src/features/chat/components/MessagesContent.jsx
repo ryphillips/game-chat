@@ -23,7 +23,7 @@ export default function MessagesContent(props) {
   ));
 
   return (
-    <div>
+    <React.Fragment>
       <List style={{
         zIndex: 100,
         paddingLeft: 10,
@@ -33,6 +33,6 @@ export default function MessagesContent(props) {
         {messageList}
       </List>
       <ChatInput channelId={props.channelId} />
-    </div>
+    </React.Fragment>
   );
 }

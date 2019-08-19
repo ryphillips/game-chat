@@ -1,5 +1,7 @@
 
 
-describe('auth tests', function() {
-
+describe('auth tests', function(){
+  it('test nothing', function() {
+    
+  });
 });

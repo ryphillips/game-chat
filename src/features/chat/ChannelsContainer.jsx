@@ -13,11 +13,12 @@ function channelsState(state) {
 }
 const channelsActions = { selectChannel, addChannelsListener };
 function ChannelsContainer(props) {
-  React.useEffect(() =>
+  React.useEffect(() => 
     props.addChannelsListener(props.currentGuild), []);
   return <ChannelContent {...props}/>;
 }
-ChannelsContainer.propTypes =  {
+
+ChannelsContainer.propTypes = {
   channels: PropTypes.object,
   currentChannel: PropTypes.string
 };

@@ -6,8 +6,6 @@ import Home from '../../features/home/Home';
 import Login from '../../features/auth/Login';
 import Chat from '../../features/chat/Chat';
 import * as OKTA from '../../config/okta';
-import grey from '@material-ui/core/colors/grey';
-
 
 function onAuthRequired({ history }) {
   history.push('/login');

@@ -16,7 +16,6 @@ const guildsActions = {
   onGuildClicked: selectGuild,
   addGuildsListener
 };
-
 function GuildsContainer(props) {
   const [open, setOpen] = React.useState(false);
   React.useEffect(() => props.addGuildsListener(props.user), []);
@@ -29,9 +28,13 @@ function GuildsContainer(props) {
     </React.Fragment>
   );
 }
+
 GuildsContainer.propTypes = {
   guilds: PropTypes.object,
-  currentGuild: PropTypes.string
+  currentGuild: PropTypes.string,
+  user: PropTypes.object,
+  addGuildsListener: PropTypes.func,
+  onGuildClicked: PropTypes.func
 };
 
 export default connect(
