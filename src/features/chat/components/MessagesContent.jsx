@@ -4,12 +4,12 @@ import Message from './Message'
 import { List, Divider, CircularProgress } from '@material-ui/core';
 
 export default function MessagesContent(props) {
-  if (true/*!props.messages*/) {
+  if (!props.messages) {
     return (
     <React.Fragment>
       <Message message={{
         author: { name: 'Channel Bot' },
-        text: 'Welcome to the channel start chatting!'
+        text: 'Welcome to the channel start chatting below!'
       }} />
       <ChatInput channelId={props.channelId} />
     </React.Fragment>

@@ -40,6 +40,7 @@ const App = () => {
             <Home toggleTheme={toggleDarkTheme} />} />
           <SecureRoute path='/chat' render={() => 
             <Chat toggleTheme={toggleDarkTheme} theme={theme} />} />
+          <SecureRoute path='/profile' />
           <Route path='/login' render={() => 
             <Login baseUrl={OKTA.BASE_URL} />} />
           <Route path='/implicit/callback' 

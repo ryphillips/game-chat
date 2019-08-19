@@ -33,18 +33,19 @@ class Home extends Component {
     }
 
     const button = this.state.authenticated ?
-      <button onClick={() => { this.props.auth.logout() }}>Logout</button> :
-      <button onClick={() => { this.props.auth.login() }}>Login</button>;
+      <Button onClick={() => { this.props.auth.logout() }}>Logout</Button> :
+      <Button onClick={() => { this.props.auth.login() }}>Login</Button>;
 
     return (
-      <div>
+      <div align="center">
         <h1>hello world {this.state.user ? this.state.user.name : ''}</h1>
         <Link to='/'>Home</Link><br />
-        <Link to='/protected'>Protected</Link><br />
-        <Link to='/chat'>Chat</Link><br/>
         {button}
         <Button onClick={this.props.toggleTheme} >
           Toggle theme
+        </Button>
+        <Button>
+        <Link to='/chat'>Chat</Link><br/>
         </Button>
       </div>
     );
